@@ -6,6 +6,6 @@ module com.example.pharmacy {
     requires com.dlsc.formsfx;
     requires org.kordamp.ikonli.javafx;
 
-    opens com.example.pharmacy to javafx.fxml;
-    exports com.example.pharmacy;
+    opens com.pharmacy to javafx.fxml;
+    exports com.pharmacy;
 }

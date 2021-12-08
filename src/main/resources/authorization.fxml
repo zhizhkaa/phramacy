@@ -9,24 +9,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="188.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pharmacy.AuthController">
+<VBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="188.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacy.AuthController">
    <children>
-      <AnchorPane prefHeight="192.0" prefWidth="410.0">
+      <AnchorPane prefHeight="154.0" prefWidth="330.0">
          <children>
-            <AnchorPane layoutX="31.0" layoutY="19.0" prefHeight="154.0" prefWidth="330.0">
-               <children>
-                  <PasswordField fx:id="password" layoutX="18.0" layoutY="54.0" onAction="#onSignUpButtonPress" prefHeight="26.0" prefWidth="294.0" promptText="Пароль" />
-                  <TextField fx:id="userName" layoutX="18.0" layoutY="14.0" onAction="#onSignUpButtonPress" prefHeight="26.0" prefWidth="294.0" promptText="Логин" />
-                  <Button layoutX="285.0" layoutY="54.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Button>
-                  <Hyperlink layoutX="17.0" layoutY="88.0" text="Забыли пароль?" />
-                  <Button fx:id="sgnUpButton" layoutX="194.0" layoutY="100.0" mnemonicParsing="false" onAction="#onSignUpButtonPress" prefHeight="41.0" prefWidth="122.0" text="Войти" />
-                  <Label fx:id="notification" layoutX="18.0" layoutY="111.0" prefHeight="18.0" prefWidth="98.0" />
-               </children>
-            </AnchorPane>
+            <PasswordField fx:id="passwordHide" layoutX="49.0" layoutY="54.0" onAction="#onSignUpButtonPress" prefHeight="26.0" prefWidth="266.0" promptText="Пароль" />
+            <TextField fx:id="userName" layoutX="49.0" layoutY="14.0" onAction="#onSignUpButtonPress" prefHeight="26.0" prefWidth="294.0" promptText="Логин" />
+            <Button fx:id="showButton" layoutX="316.0" layoutY="54.0" mnemonicParsing="false" onAction="#onShowButtonPress" prefHeight="26.0" prefWidth="26.0" text="👁">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+            <Hyperlink layoutX="49.0" layoutY="87.0" text="Забыли пароль?" />
+            <Button fx:id="sgnUpButton" layoutX="220.0" layoutY="99.0" mnemonicParsing="false" onAction="#onSignUpButtonPress" prefHeight="41.0" prefWidth="122.0" text="Войти" />
+            <TextField fx:id="passwordShown" layoutX="49.0" layoutY="54.0" prefHeight="26.0" prefWidth="266.0" visible="false" />
+            <Label fx:id="notification" layoutX="18.0" layoutY="111.0" prefHeight="18.0" prefWidth="98.0" />
          </children>
       </AnchorPane>
    </children>

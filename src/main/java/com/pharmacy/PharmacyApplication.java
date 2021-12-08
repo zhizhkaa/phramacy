@@ -1,4 +1,4 @@
-package com.example.pharmacy;
+package com.pharmacy;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
