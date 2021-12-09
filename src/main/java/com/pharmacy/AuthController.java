@@ -43,6 +43,7 @@ public class AuthController {
         else if (result.get() == resetPassword) {
             notification.setText("\"Отправили\" уведомление");
             // TODO Отправить какое-нибдуь уведомление для сброса пароля
+            //  Сделать проверку на логин, чтобы понять кому отправлять новый пароль
         }
 
     }
@@ -50,7 +51,7 @@ public class AuthController {
     @FXML
     protected void onSignUpButtonPress() throws IOException {
         //TODO Сделать авторизацию
-        // хранить будем в формате логин:пароль:ид_в_БД
+        // хранить будем в формате name:password:id:access
 
         String login = userName.getText().trim();
         String password = "";
@@ -90,11 +91,11 @@ public class AuthController {
                 stage.setTitle("ИС \"Фармацевтическая компания\"");
                 stage.show();
             }
-            else { notification.setText("Неправильный пароль"); }
+            else { notification.setText("Неправильный логин или пароль"); }
 
         }
         // Проверка логина и пароля
-        // TODO тут нужен какой нибудь BufferedReader чтобы читать из файла
+        // TODO тут нужен какой нибудь BufferedReader чтобы читать из json файла
     }
 
     @FXML

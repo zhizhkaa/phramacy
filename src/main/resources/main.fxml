@@ -14,325 +14,299 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane fx:id="mainPane" dividerPositions="0.2632765531062124" prefHeight="600.0" prefWidth="800.0"
-           xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.pharmacy.MainController">
+<SplitPane dividerPositions="0.2632765531062124" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacy.MainController">
    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="599.0" prefWidth="235.0">
-      <Button layoutX="20.0" layoutY="62.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="166.0"
-              text="Настройки аккаунта">
+      <Button layoutX="20.0" layoutY="62.0" mnemonicParsing="false" onAction="#onAccountSetButtonPressed" prefHeight="48.0" prefWidth="166.0" text="Настройки аккаунта">
          <font>
-            <Font size="14.0"/>
+            <Font size="14.0" />
          </font>
       </Button>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="20.0" layoutY="110.0" prefHeight="48.0"
-             prefWidth="166.0" text="Меню">
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="20.0" layoutY="110.0" prefHeight="48.0" prefWidth="166.0" text="Меню">
          <font>
-            <Font size="15.0"/>
+            <Font size="15.0" />
          </font>
       </Label>
-      <Button alignment="CENTER" layoutX="20.0" layoutY="206.0" mnemonicParsing="false" prefHeight="48.0"
-              prefWidth="166.0" text="Работа с отчётами" textAlignment="CENTER">
+      <Button alignment="CENTER" layoutX="20.0" layoutY="158.0" mnemonicParsing="false" onAction="#onTablesButtonPressed" prefHeight="48.0" prefWidth="166.0" text="Работа с данными" textAlignment="CENTER">
          <font>
-            <Font size="14.0"/>
+            <Font size="14.0" />
          </font>
       </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="20.0" layoutY="254.0" mnemonicParsing="false"
-              prefHeight="48.0" prefWidth="166.0" text="Работа с аккаунтами" textAlignment="CENTER" wrapText="true">
+      <Button alignment="CENTER" layoutX="20.0" layoutY="206.0" mnemonicParsing="false" onAction="#onReportsButtonPressed" prefHeight="48.0" prefWidth="166.0" text="Работа с отчётами" textAlignment="CENTER">
          <font>
-            <Font size="14.0"/>
+            <Font size="14.0" />
          </font>
       </Button>
-      <Button alignment="CENTER" layoutX="20.0" layoutY="302.0" mnemonicParsing="false" prefHeight="48.0"
-              prefWidth="166.0" text="Статистика сервера" textAlignment="CENTER">
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="20.0" layoutY="254.0" mnemonicParsing="false" onAction="#onAccAButtonPressed" prefHeight="48.0" prefWidth="166.0" text="Работа с аккаунтами" textAlignment="CENTER" wrapText="true">
          <font>
-            <Font size="14.0"/>
+            <Font size="14.0" />
          </font>
       </Button>
-      <Label alignment="CENTER" layoutX="20.0" layoutY="14.0" prefHeight="48.0" prefWidth="166.0"
-             text="Авторизован:&#10;user322" textAlignment="CENTER">
+      <Button alignment="CENTER" layoutX="20.0" layoutY="302.0" mnemonicParsing="false" onAction="#onStatsAButtonPressed" prefHeight="48.0" prefWidth="166.0" text="Статистика сервера" textAlignment="CENTER">
          <font>
-            <Font size="14.0"/>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Label alignment="CENTER" layoutX="20.0" layoutY="14.0" prefHeight="48.0" prefWidth="166.0" text="Авторизован:&#10;user322" textAlignment="CENTER">
+         <font>
+            <Font size="14.0" />
          </font>
       </Label>
-      <Button fx:id="tablesButton" alignment="CENTER" layoutX="20.0" layoutY="158.0" mnemonicParsing="false"
-              prefHeight="48.0" prefWidth="166.0" text="Работа с данными" textAlignment="CENTER">
-         <font>
-            <Font size="14.0"/>
-         </font>
-      </Button>
    </AnchorPane>
    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="599.0" prefWidth="334.0">
       <Pane fx:id="accountSettings" prefHeight="600.0" prefWidth="600.0">
          <AnchorPane layoutX="21.0" layoutY="26.0" prefHeight="136.0" prefWidth="559.0">
             <Label layoutX="40.0" layoutY="58.0" text="Имя пользователя:">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <Label alignment="TOP_LEFT" layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="226.0"
-                   text="Информация об аккаунте">
+            <Label alignment="TOP_LEFT" layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="226.0" text="Информация об аккаунте">
                <font>
-                  <Font size="18.0"/>
+                  <Font size="18.0" />
                </font>
             </Label>
             <Label layoutX="127.0" layoutY="91.0" prefHeight="20.0" prefWidth="39.0" text="Роль:">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <TextField layoutX="174.0" layoutY="56.0"/>
-            <TextField layoutX="174.0" layoutY="88.0"/>
+            <TextField layoutX="174.0" layoutY="56.0" />
+            <TextField layoutX="174.0" layoutY="88.0" />
          </AnchorPane>
          <AnchorPane layoutX="20.0" layoutY="162.0" prefHeight="208.0" prefWidth="559.0">
-            <Label alignment="TOP_LEFT" layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="226.0"
-                   text="Смена пароля">
+            <Label alignment="TOP_LEFT" layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="226.0" text="Смена пароля">
                <font>
-                  <Font size="18.0"/>
+                  <Font size="18.0" />
                </font>
             </Label>
-            <PasswordField layoutX="37.0" layoutY="47.0" prefHeight="26.0" prefWidth="180.0"
-                           promptText="Старый пароль"/>
-            <PasswordField layoutX="37.0" layoutY="87.0" prefHeight="26.0" prefWidth="180.0"
-                           promptText="Новый пароль"/>
-            <PasswordField layoutX="37.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0"
-                           promptText="Повторите новый пароль"/>
-            <ToggleButton layoutX="221.0" layoutY="47.0" mnemonicParsing="false" prefHeight="26.0"
-                          prefWidth="26.0" text="👁">
+            <PasswordField layoutX="37.0" layoutY="47.0" prefHeight="26.0" prefWidth="180.0" promptText="Старый пароль" />
+            <PasswordField layoutX="37.0" layoutY="87.0" prefHeight="26.0" prefWidth="180.0" promptText="Новый пароль" />
+            <PasswordField layoutX="37.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0" promptText="Повторите новый пароль" />
+            <ToggleButton layoutX="221.0" layoutY="47.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
-                  <Font size="11.0"/>
+                  <Font size="11.0" />
                </font>
             </ToggleButton>
-            <ToggleButton layoutX="221.0" layoutY="87.0" mnemonicParsing="false" prefHeight="26.0"
-                          prefWidth="26.0" text="👁">
+            <ToggleButton layoutX="221.0" layoutY="87.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
-                  <Font size="11.0"/>
+                  <Font size="11.0" />
                </font>
             </ToggleButton>
-            <ToggleButton layoutX="221.0" layoutY="130.0" mnemonicParsing="false" prefHeight="26.0"
-                          prefWidth="26.0" text="👁">
+            <ToggleButton layoutX="221.0" layoutY="130.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
-                  <Font size="11.0"/>
+                  <Font size="11.0" />
                </font>
             </ToggleButton>
-            <Button layoutX="37.0" layoutY="169.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="211.0"
-                    text="Сменить пароль">
+            <Button layoutX="37.0" layoutY="169.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="211.0" text="Сменить пароль">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Button>
          </AnchorPane>
          <AnchorPane layoutX="21.0" layoutY="370.0" prefHeight="168.0" prefWidth="559.0">
-            <Label alignment="TOP_LEFT" layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="274.0"
-                   text="Привязать электронную почту">
+            <Label alignment="TOP_LEFT" layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="274.0" text="Привязать электронную почту">
                <font>
-                  <Font size="18.0"/>
+                  <Font size="18.0" />
                </font>
             </Label>
             <Button layoutX="203.0" layoutY="98.0" mnemonicParsing="false" text="Привязать">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Button>
-            <TextField layoutX="40.0" layoutY="57.0" prefHeight="26.0" prefWidth="250.0"/>
+            <TextField layoutX="40.0" layoutY="57.0" prefHeight="26.0" prefWidth="250.0" promptText="E-mail" />
          </AnchorPane>
       </Pane>
-      <Pane layoutX="-1.0" prefHeight="600.0" prefWidth="586.0" visible="false">
+      <Pane fx:id="tables" layoutX="-1.0" prefHeight="600.0" prefWidth="586.0" visible="false">
          <Label layoutX="36.0" layoutY="31.0" text="Таблица: ">
             <font>
-               <Font size="14.0"/>
+               <Font size="14.0" />
             </font>
          </Label>
-         <ChoiceBox layoutX="96.0" layoutY="29.0" prefHeight="25.0" prefWidth="197.0"/>
-         <Button layoutX="35.0" layoutY="74.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="122.0"
-                 text="Вывести таблицу"/>
-         <Button layoutX="171.0" layoutY="74.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="122.0"
-                 text="Вывести таблицу в новом окне" textAlignment="CENTER" wrapText="true"/>
-         <Button layoutX="347.0" layoutY="29.0" mnemonicParsing="false" text="Сохранить всё"/>
-         <Button layoutX="456.0" layoutY="29.0" mnemonicParsing="false" text="Закрыть"/>
-         <Label layoutX="26.0" layoutY="177.0"
-                text="Ну надо как-то вывести MYSQL, но пока не знаю как наверное через table" wrapText="true"/>
+         <ChoiceBox layoutX="96.0" layoutY="29.0" prefHeight="25.0" prefWidth="197.0" />
+         <Button layoutX="35.0" layoutY="74.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="122.0" text="Вывести таблицу" />
+         <Button layoutX="171.0" layoutY="74.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="122.0" text="Вывести таблицу в новом окне" textAlignment="CENTER" wrapText="true" />
+         <Button layoutX="347.0" layoutY="29.0" mnemonicParsing="false" text="Сохранить всё" />
+         <Button layoutX="456.0" layoutY="29.0" mnemonicParsing="false" text="Закрыть" />
+         <Label layoutX="26.0" layoutY="177.0" text="Ну надо как-то вывести MYSQL, но пока не знаю как наверное через table" wrapText="true" />
       </Pane>
-      <Pane layoutX="-1.0" prefHeight="600.0" prefWidth="586.0" visible="false">
+      <Pane fx:id="reports" layoutX="-1.0" prefHeight="600.0" prefWidth="586.0" visible="false">
          <Label layoutX="71.0" layoutY="36.0" text="Форма:">
             <font>
-               <Font size="14.0"/>
+               <Font size="14.0" />
             </font>
          </Label>
          <Label layoutX="73.0" layoutY="74.0" prefHeight="20.0" prefWidth="60.0" text="Период:">
             <font>
-               <Font size="14.0"/>
+               <Font size="14.0" />
             </font>
          </Label>
-         <ChoiceBox layoutX="131.0" layoutY="34.0" prefWidth="150.0"/>
+         <ChoiceBox layoutX="131.0" layoutY="34.0" prefWidth="150.0" />
          <Label layoutX="245.0" layoutY="130.0" text="Предпросмотр">
             <font>
-               <Font size="14.0"/>
+               <Font size="14.0" />
             </font>
          </Label>
-         <Button layoutX="331.0" layoutY="542.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="86.0"
-                 text="Печать">
+         <Button layoutX="331.0" layoutY="542.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="86.0" text="Печать">
             <font>
-               <Font size="14.0"/>
+               <Font size="14.0" />
             </font>
          </Button>
          <Button layoutX="433.0" layoutY="542.0" mnemonicParsing="false" text="Сохранить как">
             <font>
-               <Font size="14.0"/>
+               <Font size="14.0" />
             </font>
          </Button>
-         <TextArea layoutX="31.0" layoutY="150.0" prefHeight="378.0" prefWidth="514.0"/>
-         <DatePicker layoutX="288.0" layoutY="71.0" prefHeight="26.0" prefWidth="122.0"/>
+         <TextArea layoutX="31.0" layoutY="150.0" prefHeight="378.0" prefWidth="514.0" />
+         <DatePicker layoutX="288.0" layoutY="71.0" prefHeight="26.0" prefWidth="122.0" />
          <Label layoutX="131.0" layoutY="74.0" prefHeight="20.0" prefWidth="26.0" text="с">
             <font>
-               <Font size="14.0"/>
+               <Font size="14.0" />
             </font>
          </Label>
-         <DatePicker layoutX="144.0" layoutY="71.0" prefHeight="26.0" prefWidth="114.0"/>
+         <DatePicker layoutX="144.0" layoutY="71.0" prefHeight="26.0" prefWidth="114.0" />
          <Label layoutX="262.0" layoutY="74.0" prefHeight="18.0" prefWidth="38.0" text="до">
             <font>
-               <Font size="14.0"/>
+               <Font size="14.0" />
             </font>
          </Label>
       </Pane>
-      <Pane prefHeight="599.0" prefWidth="586.0" visible="false">
+      <Pane fx:id="accountsAdmin" prefHeight="599.0" prefWidth="586.0" visible="false">
          <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="559.0">
             <Label layoutX="14.0" layoutY="14.0" text="Создание аккаунта">
                <font>
-                  <Font size="16.0"/>
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="43.0" layoutY="80.0" text="ФИО пользователя:">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
             <Label layoutX="94.0" layoutY="111.0" text="Должность:">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <TextField layoutX="175.0" layoutY="49.0" prefWidth="150.0"/>
-            <ChoiceBox layoutX="175.0" layoutY="108.0" prefWidth="150.0"/>
-            <TextField layoutX="175.0" layoutY="77.0" prefWidth="150.0"/>
-            <Label layoutX="36.0" layoutY="52.0" prefHeight="20.0" prefWidth="139.0"
-                   text="Логин пользователя:">
+            <TextField layoutX="175.0" layoutY="49.0" prefWidth="150.0" />
+            <ChoiceBox layoutX="175.0" layoutY="108.0" prefWidth="150.0" />
+            <TextField layoutX="175.0" layoutY="77.0" prefWidth="150.0" />
+            <Label layoutX="36.0" layoutY="52.0" prefHeight="20.0" prefWidth="139.0" text="Логин пользователя:">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
             <Button layoutX="206.0" layoutY="169.0" mnemonicParsing="false" text="Создать аккаунт">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Button>
             <AnchorPane layoutX="22.0" layoutY="134.0" prefHeight="27.0" prefWidth="309.0">
                <Label layoutX="61.0" layoutY="4.0" text="Роль:">
                   <font>
-                     <Font size="14.0"/>
+                     <Font size="14.0" />
                   </font>
                </Label>
-               <RadioButton layoutX="102.0" layoutY="5.0" mnemonicParsing="false" text="администратор"/>
-               <RadioButton layoutX="213.0" layoutY="5.0" mnemonicParsing="false" text="пользователь"/>
+               <RadioButton layoutX="102.0" layoutY="5.0" mnemonicParsing="false" text="администратор" />
+               <RadioButton layoutX="213.0" layoutY="5.0" mnemonicParsing="false" text="пользователь" />
             </AnchorPane>
          </AnchorPane>
          <AnchorPane layoutX="14.0" layoutY="214.0" prefHeight="200.0" prefWidth="559.0">
             <Label layoutX="14.0" layoutY="14.0" text="Удаление аккаунта">
                <font>
-                  <Font size="16.0"/>
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label layoutX="36.0" layoutY="51.0" prefHeight="20.0" prefWidth="139.0"
-                   text="Логин пользователя:">
+            <Label layoutX="36.0" layoutY="51.0" prefHeight="20.0" prefWidth="139.0" text="Логин пользователя:">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <ChoiceBox layoutX="175.0" layoutY="48.0" prefWidth="150.0"/>
+            <ChoiceBox layoutX="175.0" layoutY="48.0" prefWidth="150.0" />
             <Label layoutX="43.0" layoutY="87.0" text="ФИО пользователя:">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
             <Label layoutX="135.0" layoutY="115.0" text="Роль:">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <TextField layoutX="175.0" layoutY="84.0" prefWidth="150.0"/>
-            <TextField layoutX="175.0" layoutY="112.0" prefWidth="150.0"/>
+            <TextField layoutX="175.0" layoutY="84.0" prefWidth="150.0" />
+            <TextField layoutX="175.0" layoutY="112.0" prefWidth="150.0" />
             <Button layoutX="204.0" layoutY="155.0" mnemonicParsing="false" text="Удалить аккаунт">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Button>
          </AnchorPane>
       </Pane>
-      <Pane prefHeight="599.0" prefWidth="586.0" visible="false">
+      <Pane fx:id="statsAdmin" prefHeight="599.0" prefWidth="586.0" visible="false">
          <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="390.0" prefWidth="559.0">
             <Label layoutX="14.0" layoutY="14.0" text="Статистика сервера">
                <font>
-                  <Font size="16.0"/>
+                  <Font size="16.0" />
                </font>
             </Label>
-            <TextField layoutX="296.0" layoutY="57.0"/>
+            <TextField layoutX="296.0" layoutY="57.0" />
             <Label layoutX="19.0" layoutY="60.0" text="Кол-во пользователей за последний час:" wrapText="true">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <TextField layoutX="296.0" layoutY="83.0"/>
+            <TextField layoutX="296.0" layoutY="83.0" />
             <Label layoutX="19.0" layoutY="86.0" text="Кол-во запросов за последний час:" wrapText="true">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <TextField layoutX="296.0" layoutY="109.0"/>
+            <TextField layoutX="296.0" layoutY="109.0" />
             <Label layoutX="19.0" layoutY="112.0" text="Время работы сервера:" wrapText="true">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <TextField layoutX="296.0" layoutY="135.0"/>
+            <TextField layoutX="296.0" layoutY="135.0" />
             <Label layoutX="19.0" layoutY="138.0" text="Макс. время выполнения запроса, мс:" wrapText="true">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <TextField layoutX="296.0" layoutY="161.0"/>
+            <TextField layoutX="296.0" layoutY="161.0" />
             <Label layoutX="19.0" layoutY="164.0" text="Средн. время выполнения запроса, мс:" wrapText="true">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <TextField layoutX="296.0" layoutY="187.0"/>
+            <TextField layoutX="296.0" layoutY="187.0" />
             <Label layoutX="19.0" layoutY="190.0" text="Количество открытых таблиц:" wrapText="true">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <TextField layoutX="296.0" layoutY="213.0"/>
+            <TextField layoutX="296.0" layoutY="213.0" />
             <Label layoutX="19.0" layoutY="216.0" text="Последнее резервное копирование:" wrapText="true">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
             <Button layoutX="16.0" layoutY="260.0" mnemonicParsing="false" text="Выключить сервер">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Button>
-            <Button layoutX="197.0" layoutY="259.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="114.0"
-                    text="Перезапустить">
+            <Button layoutX="197.0" layoutY="259.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="114.0" text="Перезапустить">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Button>
             <Button layoutX="320.0" layoutY="260.0" mnemonicParsing="false" text="Резервное копирование">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Button>
-            <Label layoutX="144.0" layoutY="303.0" text="Не знаю что делать с этими кнопками :("/>
+            <Label layoutX="144.0" layoutY="303.0" text="Не знаю что делать с этими кнопками :(" />
          </AnchorPane>
       </Pane>
    </AnchorPane>
