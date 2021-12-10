@@ -87,17 +87,17 @@
             <TextField fx:id="newPasswordShownA" layoutX="37.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0" promptText="Повторите новый пароль" visible="false" />
             <Button fx:id="showPasswordA" layoutX="217.0" layoutY="47.0" mnemonicParsing="false" onAction="#showPressedA" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
-                  <Font size="11.0" />
+                  <Font size="10.0" />
                </font>
             </Button>
             <Button fx:id="showPasswordB" layoutX="217.0" layoutY="87.0" mnemonicParsing="false" onAction="#showPressedB" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
-                  <Font size="11.0" />
+                  <Font size="10.0" />
                </font>
             </Button>
             <Button fx:id="showPasswordC" layoutX="217.0" layoutY="130.0" mnemonicParsing="false" onAction="#showPressedC" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
-                  <Font size="11.0" />
+                  <Font size="10.0" />
                </font>
             </Button>
             <Button fx:id="changePassword" layoutX="37.0" layoutY="169.0" mnemonicParsing="false" onAction="#onChangePasswordPressed" prefHeight="38.0" prefWidth="211.0" text="Сменить пароль">

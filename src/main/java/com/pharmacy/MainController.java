@@ -1,7 +1,6 @@
 package com.pharmacy;
 
 import com.pharmacy.classes.User;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -55,31 +54,55 @@ public class MainController {
         @FXML private TextField userName;
         @FXML private TextField role;
 
-        // TODO Смена пароля
-        @FXML private Button showPasswordA;
+
+        // Старый пароль
             @FXML private PasswordField oldPasswordHide;
             @FXML private TextField oldPasswordShown;
-        @FXML private Button showPasswordB;
+        // Новый пароль
             @FXML private PasswordField newPasswordHide;
             @FXML private TextField newPasswordShown;
-        @FXML private Button showPasswordC;
+        // Повторить новый пароль
             @FXML private PasswordField newPasswordHideA;
             @FXML private TextField newPasswordShownA;
 
-        @FXML private Button changePassword;
+    public void onChangePasswordPressed() throws JSONException {
+        String oldPassword = "";
+        String newPassword = "";
 
-    // TODO Проверка старого пароля,                ОК - Дальше, НЕОК - Неправильный пароль
-    // TODO Смотрим чтобы новые пароли совпадали,   ОК - Дальше, НЕОК - Пароли не совпадают
-    // TODO Ищем пользователя в users
-    // TODO Меняем пароль,                          Уведомление "Успешная смена пароля"
-    public void onChangePasswordPressed(ActionEvent event) {
-        String oldPassword = this.oldPasswordHide.getText();
-        String newPassword = newPasswordHide.getText();
-
-        if (oldPassword.isEmpty()) {
-            oldPasswordHide.setPromptText("ВЫ не ввели пароль");
+        // Проверка на ввод
+        if ((oldPasswordShown.getText().trim().isEmpty()) && (oldPasswordHide.getText().trim().isEmpty())) {
+            oldPasswordHide.setPromptText("Вы не ввели пароль");
             oldPasswordShown.setPromptText("Вы не ввели пароль");
         }
+        else if ((newPasswordShown.getText().trim().isEmpty()) && (newPasswordHide.getText().trim().isEmpty())) {
+            newPasswordShown.setPromptText("Вы не ввели новый пароль");
+            newPasswordHide.setPromptText("Вы не ввели новый пароль");
+        }
+        else if ((newPasswordShownA.getText().trim().isEmpty()) && (newPasswordHideA.getText().trim().isEmpty())) {
+            newPasswordShownA.setPromptText("Вы не ввели пароль повторно");
+            newPasswordHideA.setPromptText("Вы не ввели пароль повторно");
+        }
+        else {
+            if (oldPasswordHide.isVisible()) { oldPassword = oldPasswordHide.getText().trim(); }
+            else if (oldPasswordShown.isVisible()) { oldPassword = oldPasswordShown.getText().trim(); }
+
+            if (newPasswordHide.isVisible()) { newPassword = newPasswordHide.getText().trim(); }
+            else if (newPasswordShown.isVisible()) { newPassword = newPasswordShown.getText().trim(); }
+
+            //noinspection ConstantConditions
+            if (oldPassword.equals(newPassword) && (!(oldPassword.isEmpty()) || !(newPassword.isEmpty()))) { System.out.println("Старый и новый пароли совпадают"); }
+            else { // Если не работает добавь if (!(oldPassword.equals(newPassword) && (!(oldPassword.isEmpty()) || !(newPassword.isEmpty()))))
+                String passwordJSON = user.getPassword();
+                if (oldPassword.equals(passwordJSON)) {
+                    System.out.println("Доступ разрешён, меняем пароль");
+                    user.setPassword(newPassword);
+                    // TODO Вывести уведомление о смене пароля и очистить поля
+                }
+                else { System.out.println("Неверный пароль"); }
+            }
+        }
+        // Проверка на правильность пароля
+
 
 
     }
@@ -99,7 +122,7 @@ public class MainController {
     }
     // Нажатие кнопок скрытия, вызывают метод hideButton
     public void showPressedA() { hideButton(oldPasswordHide, oldPasswordShown);}
-    public void showPressedB() { hideButton(newPasswordHide, newPasswordShownA);}
+    public void showPressedB() { hideButton(newPasswordHide, newPasswordShown);}
     public void showPressedC() { hideButton(newPasswordHideA, newPasswordShownA);}
 
 
@@ -107,7 +130,7 @@ public class MainController {
 
 
     // Работа с данными
-    public void onTablesButtonPressed(ActionEvent event) {
+    public void onTablesButtonPressed() {
         accountSettings.setVisible(false);
         tables.setVisible(true);
         reports.setVisible(false);
@@ -117,7 +140,7 @@ public class MainController {
     @FXML private Pane tables;
 
     // Работа с отчётами
-    public void onReportsButtonPressed(ActionEvent event) {
+    public void onReportsButtonPressed() {
         accountSettings.setVisible(false);
         tables.setVisible(false);
         reports.setVisible(true);
@@ -127,7 +150,7 @@ public class MainController {
     @FXML private Pane reports;
 
     // Работа с аккаунтами
-    public void onAccAButtonPressed(ActionEvent event) {
+    public void onAccAButtonPressed() {
         accountSettings.setVisible(false);
         tables.setVisible(false);
         reports.setVisible(false);
@@ -137,7 +160,7 @@ public class MainController {
     @FXML private Pane accountsAdmin;
 
     // Статистика сервера
-    public void onStatsAButtonPressed(ActionEvent event) {
+    public void onStatsAButtonPressed() {
         accountSettings.setVisible(false);
         tables.setVisible(false);
         reports.setVisible(false);

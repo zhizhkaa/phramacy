@@ -28,7 +28,7 @@ public class User {
 
     public User(String login, String password) throws JSONException {
         this.login = login;
-        userJSON = readJSON();
+        userJSON = readJSON().getJSONObject(login);
 
         this.password = userJSON.getString("password");
         this.id = userJSON.getInt("id");
@@ -36,7 +36,7 @@ public class User {
     }
 
     public void checkUser() throws JSONException {
-        JSONObject user = readJSON();
+        JSONObject user = readJSON().getJSONObject(login);
         System.out.println(login);
         System.out.println(user.getString("password"));
         System.out.println(user.getString("id"));
@@ -48,24 +48,18 @@ public class User {
     public int getId() { return id; }
     public int getAccess() { return access; }
 
-    public JSONObject readJSON() throws JSONException {
+    public static JSONObject readJSON() throws JSONException {
         InputStream is = User.class.getResourceAsStream("/users.json");
         String jsonTxt = new BufferedReader(
                 new InputStreamReader(is, StandardCharsets.UTF_8))
                 .lines()
                 .collect(Collectors.joining("\n"));
 
-        JSONObject user = new JSONObject(jsonTxt).getJSONObject(this.login);
+        JSONObject jsonObject = new JSONObject(jsonTxt);
 
-        return user;
+        return jsonObject;
     }
-
-    static public String resetPassword(String login) throws JSONException {
-        InputStream is = User.class.getResourceAsStream("/users.json");
-        String jsonTxt = new BufferedReader(
-                new InputStreamReader(is, StandardCharsets.UTF_8))
-                .lines()
-                .collect(Collectors.joining("\n"));
+    static String generatePassword() {
         // Генерируем новый пароль
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
@@ -77,8 +71,16 @@ public class User {
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
 
-        JSONObject object = new JSONObject(jsonTxt);
+        return generatedPassword;
+    }
+
+    static public String resetPassword(String login) throws JSONException {
+
+        String generatedPassword = generatePassword();
+
+        JSONObject object = readJSON();
         JSONObject user = object.getJSONObject(login);
+
         if (user != null) {
             user.put("password", generatedPassword);
             object.put(login, user);
@@ -93,5 +95,23 @@ public class User {
             return generatedPassword;
         }
         return null;
+    }
+
+    public void setPassword(String newPassword) throws JSONException {
+        JSONObject object = readJSON();
+        JSONObject user = object.getJSONObject(login);
+
+        if (user != null) {
+            user.put("password", newPassword);
+            object.put(login, user);
+            try {
+                BufferedWriter out = new BufferedWriter(new FileWriter(User.class.getResource("/users.json").getPath()));
+                out.write(object.toString());
+                out.close();
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 }
