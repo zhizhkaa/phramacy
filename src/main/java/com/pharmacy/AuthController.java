@@ -107,26 +107,18 @@ public class AuthController {
         }
     }
 
-
     @FXML
     protected void onShowButtonPress () {
-        /*  При нажатии на кнопку с глазиком получает пароль
-            из активного поля и вставляет его в неактивное
-            Так же меняет видимость полей на противоположную */
-
-        String password;
-
-        if (!showPassword) {
-            password = passwordHide.getText().trim();
-            passwordShown.setText(password);
-        } else {
-            password = passwordShown.getText().trim();
-            passwordHide.setText(password);
+        if (passwordHide.isVisible()) {
+            passwordHide.setVisible(false);
+            passwordShown.setText(passwordHide.getText());
+            passwordShown.setVisible(true);
         }
-        passwordHide.setVisible(showPassword);
-        passwordShown.setVisible(!showPassword);
-
-        showPassword = !showPassword;
+        else if (passwordShown.isVisible()) {
+            passwordShown.setVisible(false);
+            passwordHide.setText(passwordShown.getText());
+            passwordHide.setVisible(true);
+        }
     }
 }
 

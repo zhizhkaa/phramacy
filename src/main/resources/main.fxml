@@ -9,7 +9,6 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
@@ -32,17 +31,17 @@
             <Font size="14.0" />
          </font>
       </Button>
+      <Button fx:id="accountsButton" alignment="CENTER" contentDisplay="CENTER" layoutX="20.0" layoutY="254.0" mnemonicParsing="false" onAction="#onAccAButtonPressed" prefHeight="48.0" prefWidth="166.0" text="Работа с аккаунтами" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
       <Button alignment="CENTER" layoutX="20.0" layoutY="206.0" mnemonicParsing="false" onAction="#onReportsButtonPressed" prefHeight="48.0" prefWidth="166.0" text="Работа с отчётами" textAlignment="CENTER">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="20.0" layoutY="254.0" mnemonicParsing="false" onAction="#onAccAButtonPressed" prefHeight="48.0" prefWidth="166.0" text="Работа с аккаунтами" textAlignment="CENTER" wrapText="true">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Button>
-      <Button alignment="CENTER" layoutX="20.0" layoutY="302.0" mnemonicParsing="false" onAction="#onStatsAButtonPressed" prefHeight="48.0" prefWidth="166.0" text="Статистика сервера" textAlignment="CENTER">
+      <Button fx:id="statsButton" alignment="CENTER" layoutX="20.0" layoutY="302.0" mnemonicParsing="false" onAction="#onStatsAButtonPressed" prefHeight="48.0" prefWidth="166.0" text="Статистика сервера" textAlignment="CENTER">
          <font>
             <Font size="14.0" />
          </font>
@@ -80,28 +79,28 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <PasswordField layoutX="37.0" layoutY="47.0" prefHeight="26.0" prefWidth="180.0" promptText="Старый пароль" />
-            <PasswordField layoutX="37.0" layoutY="87.0" prefHeight="26.0" prefWidth="180.0" promptText="Новый пароль" />
-            <PasswordField layoutX="37.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0" promptText="Повторите новый пароль" />
-            <ToggleButton layoutX="217.0" layoutY="47.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
+            <PasswordField fx:id="oldPasswordHide" layoutX="37.0" layoutY="47.0" prefHeight="26.0" prefWidth="180.0" promptText="Старый пароль" />
+            <PasswordField fx:id="newPasswordHide" layoutX="37.0" layoutY="87.0" prefHeight="26.0" prefWidth="180.0" promptText="Новый пароль" />
+            <PasswordField fx:id="newPasswordHideA" layoutX="37.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0" promptText="Повторите новый пароль" />
+            <TextField fx:id="oldPasswordShown" layoutX="37.0" layoutY="47.0" prefHeight="26.0" prefWidth="180.0" promptText="Старый пароль" visible="false" />
+            <TextField fx:id="newPasswordShown" layoutX="37.0" layoutY="87.0" prefHeight="26.0" prefWidth="180.0" promptText="Новый пароль" visible="false" />
+            <TextField fx:id="newPasswordShownA" layoutX="37.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0" promptText="Повторите новый пароль" visible="false" />
+            <Button fx:id="showPasswordA" layoutX="217.0" layoutY="47.0" mnemonicParsing="false" onAction="#showPressedA" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
                   <Font size="11.0" />
                </font>
-            </ToggleButton>
-            <ToggleButton layoutX="217.0" layoutY="87.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
+            </Button>
+            <Button fx:id="showPasswordB" layoutX="217.0" layoutY="87.0" mnemonicParsing="false" onAction="#showPressedB" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
                   <Font size="11.0" />
                </font>
-            </ToggleButton>
-            <ToggleButton layoutX="217.0" layoutY="130.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
+            </Button>
+            <Button fx:id="showPasswordC" layoutX="217.0" layoutY="130.0" mnemonicParsing="false" onAction="#showPressedC" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
                   <Font size="11.0" />
                </font>
-            </ToggleButton>
-            <TextField layoutX="248.0" layoutY="47.0" prefHeight="26.0" prefWidth="180.0" />
-            <TextField layoutX="248.0" layoutY="87.0" prefHeight="26.0" prefWidth="180.0" />
-            <TextField layoutX="248.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0" />
-            <Button layoutX="37.0" layoutY="169.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="211.0" text="Сменить пароль">
+            </Button>
+            <Button fx:id="changePassword" layoutX="37.0" layoutY="169.0" mnemonicParsing="false" onAction="#onChangePasswordPressed" prefHeight="38.0" prefWidth="211.0" text="Сменить пароль">
                <font>
                   <Font size="14.0" />
                </font>
