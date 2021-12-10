@@ -76,6 +76,12 @@ public class MainController {
         String oldPassword = this.oldPasswordHide.getText();
         String newPassword = newPasswordHide.getText();
 
+        if (oldPassword.isEmpty()) {
+            oldPasswordHide.setPromptText("ВЫ не ввели пароль");
+            oldPasswordShown.setPromptText("Вы не ввели пароль");
+        }
+
+
     }
 
     // Метод для кнопок скрытия пароля

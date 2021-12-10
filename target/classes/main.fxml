@@ -79,12 +79,12 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <PasswordField fx:id="hideFieldA" layoutX="37.0" layoutY="47.0" prefHeight="26.0" prefWidth="180.0" promptText="Старый пароль" />
-            <PasswordField fx:id="hideFieldB" layoutX="37.0" layoutY="87.0" prefHeight="26.0" prefWidth="180.0" promptText="Новый пароль" />
-            <PasswordField fx:id="hideFieldC" layoutX="37.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0" promptText="Повторите новый пароль" />
-            <TextField fx:id="showFieldA" layoutX="37.0" layoutY="47.0" prefHeight="26.0" prefWidth="180.0" promptText="Старый пароль" visible="false" />
-            <TextField fx:id="showFieldB" layoutX="37.0" layoutY="87.0" prefHeight="26.0" prefWidth="180.0" promptText="Новый пароль" visible="false" />
-            <TextField fx:id="showFieldC" layoutX="37.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0" promptText="Повторите новый пароль" visible="false" />
+            <PasswordField fx:id="oldPasswordHide" layoutX="37.0" layoutY="47.0" prefHeight="26.0" prefWidth="180.0" promptText="Старый пароль" />
+            <PasswordField fx:id="newPasswordHide" layoutX="37.0" layoutY="87.0" prefHeight="26.0" prefWidth="180.0" promptText="Новый пароль" />
+            <PasswordField fx:id="newPasswordHideA" layoutX="37.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0" promptText="Повторите новый пароль" />
+            <TextField fx:id="oldPasswordShown" layoutX="37.0" layoutY="47.0" prefHeight="26.0" prefWidth="180.0" promptText="Старый пароль" visible="false" />
+            <TextField fx:id="newPasswordShown" layoutX="37.0" layoutY="87.0" prefHeight="26.0" prefWidth="180.0" promptText="Новый пароль" visible="false" />
+            <TextField fx:id="newPasswordShownA" layoutX="37.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0" promptText="Повторите новый пароль" visible="false" />
             <Button fx:id="showPasswordA" layoutX="217.0" layoutY="47.0" mnemonicParsing="false" onAction="#showPressedA" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
                   <Font size="11.0" />
