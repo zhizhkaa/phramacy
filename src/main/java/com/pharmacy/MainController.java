@@ -3,12 +3,11 @@ package com.pharmacy;
 import com.pharmacy.classes.User;
 import com.pharmacy.classes.MySQLDriver;
 
+import java.util.Map;
+import java.util.HashMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import org.json.JSONException;
 
@@ -42,7 +41,6 @@ public class MainController {
 
         user.checkUser();
     }
-
 
     // ВКЛАДКИ:
     // Настройки аккаунта
@@ -108,7 +106,7 @@ public class MainController {
 
         // TODO Привязать Email
 
-
+    static private Map<String, String> tableChoiceQueries = new HashMap<String, String>();
     // Работа с данными
     public void onTablesButtonPressed(ActionEvent event) {
         accountSettings.setVisible(false);
@@ -116,13 +114,59 @@ public class MainController {
         reports.setVisible(false);
         accountsAdmin.setVisible(false);
         statsAdmin.setVisible(false);
+
+        // TODO сделать заполнение tableChoice при инициализации формы MainController
+        if (tableChoice.getItems().isEmpty()) {
+            tableChoice.getItems().add("Активное вещество");
+            tableChoiceQueries.put("Активное вещество", "SELECT * FROM active_substance");
+            tableChoice.getItems().add("Состав акт. веществ препарата");
+            tableChoiceQueries.put("Состав акт. веществ препарата", "SELECT * FROM active_substance_comp");
+            tableChoice.getItems().add("Вспомогательное вещество");
+            tableChoiceQueries.put("Вспомогательное вещество", "SELECT * FROM secondary_substance");
+            tableChoice.getItems().add("Состав всп. веществ препарата");
+            tableChoiceQueries.put("Состав всп. веществ препарата", "SELECT * FROM secondary_substance_comp");
+            tableChoice.getItems().add("Исследование");
+            tableChoiceQueries.put("Исследование", "SELECT * FROM research");
+            tableChoice.getItems().add("Лекарственное средство");
+            tableChoiceQueries.put("Лекарственное средство", "SELECT * FROM medicine");
+            tableChoice.getItems().add("Поставщик веществ");
+            tableChoiceQueries.put("Поставщик веществ", "SELECT * FROM supplier");
+            tableChoice.getItems().add("Поставка веществ");
+            tableChoiceQueries.put("Поставка веществ", "SELECT * FROM supplies");
+            tableChoice.getItems().add("Производственный цех");
+            tableChoiceQueries.put("Производственный цех", "SELECT * FROM workshops");
+            tableChoice.getItems().add("Должности");
+            tableChoiceQueries.put("Должности", "SELECT * FROM positions");
+            tableChoice.getItems().add("Сотрудники");
+            tableChoiceQueries.put("Сотрудники", "SELECT * FROM employees");
+            tableChoice.getItems().add("Партия препарата");
+            tableChoiceQueries.put("Партия препарата", "SELECT * FROM medicine_batch");
+            tableChoice.getItems().add("Производство препарата");
+            tableChoiceQueries.put("Производство препарата", "SELECT * FROM medicine_production");
+            tableChoice.getItems().add("Операции");
+            tableChoiceQueries.put("Операции", "SELECT * FROM operations");
+            tableChoice.getItems().add("Операции по складу");
+            tableChoiceQueries.put("Операции по складу", "SELECT * FROM warehouse_operations");
+            tableChoice.getItems().add("Склад. партии препарата");
+            tableChoiceQueries.put("Склад. партии препарата", "SELECT * FROM medicine_warehouse");
+            tableChoice.getItems().add("Заказчик");
+            tableChoiceQueries.put("Заказчик", "SELECT * FROM customers");
+            tableChoice.getItems().add("Сбыт");
+            tableChoiceQueries.put("Сбыт", "SELECT * FROM sales");
+            tableChoice.getItems().add("Сбыт партии");
+            tableChoiceQueries.put("Сбыт партии", "SELECT * FROM medicine_sale");
+        }
     }
     @FXML private Pane tables;
         @FXML private TableView tvTest;
+        @FXML private ChoiceBox tableChoice;
+
 
     public void onDisplayTableButtonPressed(ActionEvent event) {
+        // Удаляем существующие данные в табл
         tvTest.getItems().clear();
-        MySQLDriver.buildData(tvTest, "SELECT * FROM employees");
+        tvTest.getColumns().clear();
+        MySQLDriver.buildData(tvTest, tableChoiceQueries.get(tableChoice.getSelectionModel().getSelectedItem()));
     }
 
     // Работа с отчётами
@@ -154,18 +198,5 @@ public class MainController {
         statsAdmin.setVisible(true);
     }
     @FXML private Pane statsAdmin;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

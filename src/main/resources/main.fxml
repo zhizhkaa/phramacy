@@ -127,7 +127,7 @@
                <Font size="14.0" />
             </font>
          </Label>
-         <ChoiceBox layoutX="96.0" layoutY="29.0" prefHeight="25.0" prefWidth="197.0" />
+         <ChoiceBox fx:id="tableChoice" layoutX="96.0" layoutY="29.0" prefHeight="25.0" prefWidth="197.0" />
          <Button layoutX="35.0" layoutY="74.0" mnemonicParsing="false" onAction="#onDisplayTableButtonPressed" prefHeight="48.0" prefWidth="122.0" text="Вывести таблицу" />
          <Button layoutX="171.0" layoutY="74.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="122.0" text="Вывести таблицу в новом окне" textAlignment="CENTER" wrapText="true" />
          <Button layoutX="347.0" layoutY="29.0" mnemonicParsing="false" text="Сохранить всё" />
