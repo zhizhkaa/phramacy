@@ -14,32 +14,23 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class MySQLDriver {
-    public static void main(String[] args) {
-        String sqlSelectAllPersons = "SELECT * FROM positions";
-        String connectionUrl = "jdbc:mysql://localhost:3306/pharmacy";
+    private String connectionUrl;
+    private String user;
+    private String password;
 
-        try (Connection conn = DriverManager.getConnection(connectionUrl, "root", "mikeqwer2246");
-             PreparedStatement ps = conn.prepareStatement(sqlSelectAllPersons);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                int id = rs.getInt("position_id");
-                String name = rs.getString("name");
-
-                System.out.println(id + name);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+    // connectionUrl example = jdbc:mysql://localhost:3306/pharmacy
+    public MySQLDriver(String connectionUrl, String user, String password) {
+        this.connectionUrl = connectionUrl;
+        this.user = user;
+        this.password = password;
     }
 
     // Для заполнения TableView данными запроса
     // src: https://stackoverflow.com/questions/18941093/how-to-fill-up-a-tableview-with-database-data
-    public static void buildData(TableView tv, String query) {
-        String connectionUrl = "jdbc:mysql://localhost:3306/pharmacy";
+    public void buildData(TableView tv, String query) {
         ObservableList<ObservableList> data = FXCollections.observableArrayList();
 
-        try (Connection conn = DriverManager.getConnection(connectionUrl, "root", "mikeqwer2246");
+        try (Connection conn = DriverManager.getConnection(this.connectionUrl, this.user, this.password);
              PreparedStatement ps = conn.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
 

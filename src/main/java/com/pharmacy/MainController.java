@@ -7,8 +7,11 @@ import java.util.Map;
 import java.util.HashMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import org.json.JSONException;
 
 public class MainController {
@@ -106,6 +109,7 @@ public class MainController {
 
         // TODO Привязать Email
 
+    // Для соответвствия имёе таблиц к запросам на их вывод
     static private Map<String, String> tableChoiceQueries = new HashMap<String, String>();
     // Работа с данными
     public void onTablesButtonPressed(ActionEvent event) {
@@ -161,13 +165,32 @@ public class MainController {
         @FXML private TableView tvTest;
         @FXML private ChoiceBox tableChoice;
 
-
+    // Для связи с сервером БД
+    private MySQLDriver driver = new MySQLDriver("jdbc:mysql://localhost:3306/pharmacy", "root", "mikeqwer2246");
+    // Для вывода таблиц в текущем окне
     public void onDisplayTableButtonPressed(ActionEvent event) {
         // Удаляем существующие данные в табл
         tvTest.getItems().clear();
         tvTest.getColumns().clear();
-        MySQLDriver.buildData(tvTest, tableChoiceQueries.get(tableChoice.getSelectionModel().getSelectedItem()));
+        driver.buildData(tvTest, tableChoiceQueries.get(tableChoice.getSelectionModel().getSelectedItem()));
     }
+
+    // Для вывода таблиц в новом окне
+    public void onDisplayWindowedTableButtonPressed(ActionEvent event) {
+        // Подготовка окна
+        StackPane layout = new StackPane();
+        Scene scene = new Scene(layout, 600, 400);
+        Stage stage = new Stage();
+        stage.setTitle(tableChoice.getSelectionModel().getSelectedItem().toString());
+        stage.setScene(scene);
+        TableView tw = new TableView();
+        // Добавление таблицы
+        layout.getChildren().add(tw);
+        // Заполнение таблицы
+        driver.buildData(tw, tableChoiceQueries.get(tableChoice.getSelectionModel().getSelectedItem()));
+        stage.show();
+    }
+
 
     // Работа с отчётами
     public void onReportsButtonPressed(ActionEvent event) {
