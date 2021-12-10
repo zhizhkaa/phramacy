@@ -48,16 +48,34 @@ public class AuthController {
             notification.setText("Вышли из уведомления");
         }
         else if (result.get() == resetPassword) {
-            notification.setText("\"Отправили\" уведомление");
-            Alert newPassword = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK);
-
             // TODO: вместо этого нужно окно для ввода логина, проверка логина, вывод нового пароля
-            newPassword.setTitle("Новый пароль");
-            newPassword.setHeaderText(null);
-            newPassword.setContentText("Новый пароль:\n kfdfkdk");
-            newPassword.showAndWait();
-        }
+            notification.setText("\"Отправили\" уведомление");
+            TextInputDialog newPassword = new TextInputDialog();
 
+            newPassword.setTitle("Сброс пароля");
+            newPassword.setHeaderText(null);
+            newPassword.setContentText("Введите логин:");
+            Optional<String> login = newPassword.showAndWait();
+            login.ifPresent(name -> {
+                try {
+                    String new_password = User.resetPassword(login.get());
+                    Alert passwordResetAlert = new Alert(Alert.AlertType.INFORMATION);
+                    if (new_password != null) {
+                        TextArea passwordArea = new TextArea("YOUR_MESSAGE_HERE");
+                        passwordArea.setEditable(false);
+                        passwordArea.setWrapText(true);
+                        passwordArea.setText(String.format("Новый пароль: %s", new_password));
+                        passwordResetAlert.setTitle("Сброс пароля: успешно");
+                        passwordResetAlert.setHeaderText("Успешно сброшен пароль.");
+                        passwordResetAlert.getDialogPane().setContent(passwordArea);
+                        passwordResetAlert.showAndWait();
+                    }
+                }
+                catch (JSONException e) {
+                    System.out.println(e.getMessage());
+                }
+            });
+        }
     }
 
     @FXML
