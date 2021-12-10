@@ -62,9 +62,6 @@ public class AuthController {
 
         String login = userName.getText().trim();
         String password = "";
-
-
-
         // Проверка на ввод логина
         if (login.isEmpty()) { userName.setPromptText("Вы не ввели логин"); }
         else {userName.setPromptText("Логин");}
@@ -84,31 +81,32 @@ public class AuthController {
             passwordHide.setPromptText("Пароль");
             password = passwordHide.getText();
         }
+        try {
+            System.out.println(login + password);
+            // TODO если хеш пароля совпадает с хешем в файле у пользователя и если есть такой клиент
+            if (!login.isEmpty() && !password.isEmpty()) {
+                User user = new User(login, password);
+                if ((user.getLogin() == login) && (user.getPassword() == password)) {
+                    Stage stage = (Stage) authPane.getScene().getWindow();
+                    PharmacyApplication.showMain(user, stage);
+                }
+                else {
+                    notification.setText("Неправильный логин или пароль");
+                }
+            }
+        }
 
-        // TODO если хеш пароля совпадает с хешем в файле у пользователя и если есть такой клиент
-        if (!login.isEmpty() && !password.isEmpty()) {
-            User user = new User(login, password);
-            try {
-                user.checkUser();
-            }
-            catch (JSONException e) {
-                System.out.println("Нет такого пользователя");
-            }
+        catch (JSONException e) {
+            notification.setText("Нет такого пользователя");
+        }
 
-                //Stage stage = (Stage) authPane.getScene().getWindow();
-                //FXMLLoader fxmlLoader = new FXMLLoader(PharmacyApplication.class.getResource("/main.fxml"));
-                //stage.hide();
-                //SplitPane root = fxmlLoader.load();
-                //stage.getScene().setRoot(root);
-                //stage.setTitle("ИС \"Фармацевтическая компания\"");
-                //stage.show();
-            }
-            else { notification.setText("Неправильный логин или пароль"); }
+
 
 
         // Проверка логина и пароля
         // TODO тут нужен какой нибудь BufferedReader чтобы читать из json файла
     }
+
 
     @FXML
     protected void onShowButtonPress() {
