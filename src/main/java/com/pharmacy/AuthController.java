@@ -1,9 +1,12 @@
 package com.pharmacy;
 
 import com.pharmacy.classes.User;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.json.JSONException;
@@ -48,32 +51,36 @@ public class AuthController {
             notification.setText("Вышли из уведомления");
         }
         else if (result.get() == resetPassword) {
-            // TODO: вместо этого нужно окно для ввода логина, проверка логина, вывод нового пароля
-            notification.setText("\"Отправили\" уведомление");
+            // notification.setText("\"Отправили\" уведомление");
             TextInputDialog newPassword = new TextInputDialog();
-
             newPassword.setTitle("Сброс пароля");
             newPassword.setHeaderText(null);
             newPassword.setContentText("Введите логин:");
             Optional<String> login = newPassword.showAndWait();
-            login.ifPresent(name -> {
+            login.ifPresentOrElse((value) -> {
                 try {
                     String new_password = User.resetPassword(login.get());
+
                     Alert passwordResetAlert = new Alert(Alert.AlertType.INFORMATION);
                     if (new_password != null) {
-                        TextArea passwordArea = new TextArea("YOUR_MESSAGE_HERE");
-                        passwordArea.setEditable(false);
-                        passwordArea.setWrapText(true);
-                        passwordArea.setText(String.format("Новый пароль: %s", new_password));
+                        TextField passwordAreaA = new TextField();
+
+                        passwordAreaA.setEditable(false);
+                        passwordAreaA.setText(String.format("Новый пароль: %s", new_password));
+
                         passwordResetAlert.setTitle("Сброс пароля: успешно");
                         passwordResetAlert.setHeaderText("Успешно сброшен пароль.");
-                        passwordResetAlert.getDialogPane().setContent(passwordArea);
+                        passwordResetAlert.getDialogPane().setContent(passwordAreaA);
                         passwordResetAlert.showAndWait();
                     }
                 }
                 catch (JSONException e) {
-                    System.out.println(e.getMessage());
+                    newPassword.setContentText("Вы не ввели логин");
                 }
+            },
+                    () -> {
+                    notification.setText("Вы не ввели логин");
+                    System.out.println("ПУСТО");
             });
         }
     }
