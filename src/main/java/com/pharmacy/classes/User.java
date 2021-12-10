@@ -15,14 +15,20 @@ public class User {
     private int id;
     private int access;
 
+    private JSONObject userJSON;
+
     /*
     Сначала создаём объект User с логином и паролем, потом проверяем
     его методом check user
      */
 
-    public User(String login, String password) {
+    public User(String login, String password) throws JSONException {
         this.login = login;
-        this.password = password;
+        userJSON = readJSON();
+
+        this.password = userJSON.getString("password");
+        this.id = userJSON.getInt("id");
+        this.access = userJSON.getInt("access");
     }
 
     public void checkUser() throws JSONException {

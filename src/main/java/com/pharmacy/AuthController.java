@@ -57,8 +57,7 @@ public class AuthController {
 
     @FXML
     protected void onSignUpButtonPress() throws IOException, JSONException {
-        //TODO Сделать авторизацию
-        // хранить будем в формате name:password:id:access
+
 
         String login = userName.getText().trim();
         String password = "";
