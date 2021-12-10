@@ -6,6 +6,7 @@ module com.example.pharmacy {
     requires com.dlsc.formsfx;
     requires org.kordamp.ikonli.javafx;
     requires android.json;
+    requires java.sql;
 
     opens com.pharmacy to javafx.fxml;
     exports com.pharmacy;

@@ -1,10 +1,13 @@
 package com.pharmacy;
 
 import com.pharmacy.classes.User;
+import com.pharmacy.classes.MySQLDriver;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import org.json.JSONException;
@@ -115,6 +118,12 @@ public class MainController {
         statsAdmin.setVisible(false);
     }
     @FXML private Pane tables;
+        @FXML private TableView tvTest;
+
+    public void onDisplayTableButtonPressed(ActionEvent event) {
+        tvTest.getItems().clear();
+        MySQLDriver.buildData(tvTest, "SELECT * FROM employees");
+    }
 
     // Работа с отчётами
     public void onReportsButtonPressed(ActionEvent event) {
