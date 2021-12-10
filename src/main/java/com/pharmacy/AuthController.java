@@ -1,10 +1,12 @@
 package com.pharmacy;
 
+import com.pharmacy.classes.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -23,7 +25,7 @@ public class AuthController {
     private boolean showPassword = false;
 
     @FXML
-    protected void onForgotPassword() {
+    protected void onForgotPassword() throws JSONException {
         ButtonType resetPassword = new ButtonType("Сбросить пароль", ButtonBar.ButtonData.OK_DONE);
         Alert alert = new Alert(Alert.AlertType.INFORMATION, null, resetPassword);
         alert.setTitle("Забыл пароль");
@@ -42,19 +44,26 @@ public class AuthController {
         }
         else if (result.get() == resetPassword) {
             notification.setText("\"Отправили\" уведомление");
-            // TODO Отправить какое-нибдуь уведомление для сброса пароля
-            //  Сделать проверку на логин, чтобы понять кому отправлять новый пароль
+            Alert newPassword = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK);
+
+            // TODO: вместо этого нужно окно для ввода логина, проверка логина, вывод нового пароля
+            newPassword.setTitle("Новый пароль");
+            newPassword.setHeaderText(null);
+            newPassword.setContentText("Новый пароль:\n kfdfkdk");
+            newPassword.showAndWait();
         }
 
     }
 
     @FXML
-    protected void onSignUpButtonPress() throws IOException {
+    protected void onSignUpButtonPress() throws IOException, JSONException {
         //TODO Сделать авторизацию
         // хранить будем в формате name:password:id:access
 
         String login = userName.getText().trim();
         String password = "";
+
+
 
         // Проверка на ввод логина
         if (login.isEmpty()) { userName.setPromptText("Вы не ввели логин"); }
@@ -78,22 +87,25 @@ public class AuthController {
 
         // TODO если хеш пароля совпадает с хешем в файле у пользователя и если есть такой клиент
         if (!login.isEmpty() && !password.isEmpty()) {
-            if (password.equals("user")) {
-                notification.setText("Успех");
+            User user = new User(login, password);
+            try {
+                user.checkUser();
+            }
+            catch (JSONException e) {
+                System.out.println("Нет такого пользователя");
+            }
 
-                Stage stage = (Stage) authPane.getScene().getWindow();
-                FXMLLoader fxmlLoader = new FXMLLoader(PharmacyApplication.class.getResource("/main.fxml"));
-
-                stage.hide();
-
-                SplitPane root = fxmlLoader.load();
-                stage.getScene().setRoot(root);
-                stage.setTitle("ИС \"Фармацевтическая компания\"");
-                stage.show();
+                //Stage stage = (Stage) authPane.getScene().getWindow();
+                //FXMLLoader fxmlLoader = new FXMLLoader(PharmacyApplication.class.getResource("/main.fxml"));
+                //stage.hide();
+                //SplitPane root = fxmlLoader.load();
+                //stage.getScene().setRoot(root);
+                //stage.setTitle("ИС \"Фармацевтическая компания\"");
+                //stage.show();
             }
             else { notification.setText("Неправильный логин или пароль"); }
 
-        }
+
         // Проверка логина и пароля
         // TODO тут нужен какой нибудь BufferedReader чтобы читать из json файла
     }

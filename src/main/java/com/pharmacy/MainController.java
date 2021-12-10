@@ -2,20 +2,33 @@ package com.pharmacy;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
+import javafx.stage.Window;
 
 public class MainController {
 
+    // Само окно
+    @FXML private SplitPane mainPane;
+
+    // Настройки аккаунта
     @FXML private Pane accountSettings;
+
+    // Работа с данными
     @FXML private Pane tables;
+
+    // Работа с отчётами
     @FXML private Pane reports;
+
+    // Работа с аккаунтами
     @FXML private Pane accountsAdmin;
+
+    // Статистика сервера
     @FXML private Pane statsAdmin;
 
     public void onAccountSetButtonPressed(ActionEvent event) {
+
         accountSettings.setVisible(true);
         tables.setVisible(false);
         reports.setVisible(false);

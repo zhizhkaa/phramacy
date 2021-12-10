@@ -10,13 +10,14 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
 <SplitPane dividerPositions="0.2632765531062124" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacy.MainController">
    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="599.0" prefWidth="235.0">
-      <Button layoutX="20.0" layoutY="62.0" mnemonicParsing="false" onAction="#onAccountSetButtonPressed" prefHeight="48.0" prefWidth="166.0" text="Настройки аккаунта">
+      <Button layoutX="-1.0" layoutY="62.0" mnemonicParsing="false" onAction="#onAccountSetButtonPressed" prefHeight="48.0" prefWidth="207.0" text="Настройки аккаунта">
          <font>
             <Font size="14.0" />
          </font>
@@ -46,7 +47,7 @@
             <Font size="14.0" />
          </font>
       </Button>
-      <Label alignment="CENTER" layoutX="20.0" layoutY="14.0" prefHeight="48.0" prefWidth="166.0" text="Авторизован:&#10;user322" textAlignment="CENTER">
+      <Label alignment="CENTER" layoutX="19.0" layoutY="14.0" prefHeight="48.0" prefWidth="166.0" text="Авторизован:&#10;user322" textAlignment="CENTER">
          <font>
             <Font size="14.0" />
          </font>
@@ -82,21 +83,24 @@
             <PasswordField layoutX="37.0" layoutY="47.0" prefHeight="26.0" prefWidth="180.0" promptText="Старый пароль" />
             <PasswordField layoutX="37.0" layoutY="87.0" prefHeight="26.0" prefWidth="180.0" promptText="Новый пароль" />
             <PasswordField layoutX="37.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0" promptText="Повторите новый пароль" />
-            <ToggleButton layoutX="221.0" layoutY="47.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
+            <ToggleButton layoutX="217.0" layoutY="47.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
                   <Font size="11.0" />
                </font>
             </ToggleButton>
-            <ToggleButton layoutX="221.0" layoutY="87.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
+            <ToggleButton layoutX="217.0" layoutY="87.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
                   <Font size="11.0" />
                </font>
             </ToggleButton>
-            <ToggleButton layoutX="221.0" layoutY="130.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
+            <ToggleButton layoutX="217.0" layoutY="130.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" text="👁">
                <font>
                   <Font size="11.0" />
                </font>
             </ToggleButton>
+            <TextField layoutX="248.0" layoutY="47.0" prefHeight="26.0" prefWidth="180.0" />
+            <TextField layoutX="248.0" layoutY="87.0" prefHeight="26.0" prefWidth="180.0" />
+            <TextField layoutX="248.0" layoutY="130.0" prefHeight="26.0" prefWidth="180.0" />
             <Button layoutX="37.0" layoutY="169.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="211.0" text="Сменить пароль">
                <font>
                   <Font size="14.0" />
@@ -201,15 +205,18 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <AnchorPane layoutX="22.0" layoutY="134.0" prefHeight="27.0" prefWidth="309.0">
-               <Label layoutX="61.0" layoutY="4.0" text="Роль:">
-                  <font>
-                     <Font size="14.0" />
-                  </font>
-               </Label>
-               <RadioButton layoutX="102.0" layoutY="5.0" mnemonicParsing="false" text="администратор" />
-               <RadioButton layoutX="213.0" layoutY="5.0" mnemonicParsing="false" text="пользователь" />
+            <AnchorPane layoutX="176.0" layoutY="134.0" prefHeight="27.0" prefWidth="207.0">
+               <RadioButton layoutY="5.0" mnemonicParsing="false" selected="true" text="пользователь">
+                  <toggleGroup>
+                     <ToggleGroup fx:id="userAccess" />
+                  </toggleGroup></RadioButton>
+               <RadioButton layoutX="106.0" layoutY="7.0" mnemonicParsing="false" text="администратор" toggleGroup="$userAccess" />
             </AnchorPane>
+            <Label layoutX="136.0" layoutY="138.0" text="Роль:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
          </AnchorPane>
          <AnchorPane layoutX="14.0" layoutY="214.0" prefHeight="200.0" prefWidth="559.0">
             <Label layoutX="14.0" layoutY="14.0" text="Удаление аккаунта">
