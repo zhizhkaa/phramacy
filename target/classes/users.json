@@ -1,12 +1,1 @@
-{
-  "user" : {
-  "password": "user",
-  "id": 1,
-  "access": 0
-    },
-  "admin" : {
-    "password" : "admin",
-    "id" : 2,
-    "access" : 1
-  }
-}
+{"admin":{"password":"admin","access":1,"id":2},"user":{"password":"yAQ6S0ec","access":0,"id":1}}
