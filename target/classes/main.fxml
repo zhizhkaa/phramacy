@@ -112,12 +112,12 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Button layoutX="203.0" layoutY="98.0" mnemonicParsing="false" text="Привязать">
+            <Button layoutX="203.0" layoutY="98.0" mnemonicParsing="false" onAction="#onAddEmailButtonPressed" text="Привязать">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <TextField layoutX="40.0" layoutY="57.0" prefHeight="26.0" prefWidth="250.0" promptText="E-mail" />
+            <TextField fx:id="emailField" layoutX="40.0" layoutY="57.0" prefHeight="26.0" prefWidth="250.0" promptText="E-mail" />
          </AnchorPane>
       </Pane>
       <Pane fx:id="tables" layoutX="-1.0" prefHeight="600.0" prefWidth="586.0" visible="false">

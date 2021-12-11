@@ -2,11 +2,15 @@ package com.pharmacy;
 
 import com.pharmacy.classes.User;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainController {
 
@@ -65,6 +69,7 @@ public class MainController {
             @FXML private PasswordField newPasswordHideA;
             @FXML private TextField newPasswordShownA;
 
+    // Нажатие на кнопку "Сменить пароль"
     public void onChangePasswordPressed() throws JSONException {
         String oldPassword = "";
         String newPassword = "";
@@ -96,18 +101,27 @@ public class MainController {
                 if (oldPassword.equals(passwordJSON)) {
                     System.out.println("Доступ разрешён, меняем пароль");
                     user.setPassword(newPassword);
-                    // TODO Вывести уведомление о смене пароля и очистить поля
+
+                    Alert info = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK);
+                    info.setTitle("Успешная смена пароля");
+                    info.setHeaderText(null);
+                    info.setContentText("Вы успешно сменили пароль");
+
+                    oldPasswordHide.clear();
+                    oldPasswordShown.clear();
+                    newPasswordHide.clear();
+                    newPasswordShown.clear();
+                    newPasswordHideA.clear();
+                    newPasswordShownA.clear();
+
+                    info.show();
                 }
                 else { System.out.println("Неверный пароль"); }
             }
         }
-        // Проверка на правильность пароля
-
-
-
     }
 
-    // Метод для кнопок скрытия пароля
+    // Метод для кнопок "Скрыть/показать"
     public void hideButton(PasswordField hide, TextField show) {
         if (hide.isVisible()) {
             hide.setVisible(false);
@@ -120,13 +134,54 @@ public class MainController {
             hide.setVisible(true);
         }
     }
+
     // Нажатие кнопок скрытия, вызывают метод hideButton
     public void showPressedA() { hideButton(oldPasswordHide, oldPasswordShown);}
     public void showPressedB() { hideButton(newPasswordHide, newPasswordShown);}
     public void showPressedC() { hideButton(newPasswordHideA, newPasswordShownA);}
 
+    @FXML private TextField emailField;
 
-        // TODO Привязать Email
+    // Нажатие кнопки "Привязать email
+    // TODO можно добавить поле с email'oм, хотя это и не важно
+    public void onAddEmailButtonPressed() throws JSONException {
+        String s = emailField.getText();
+        if (s.isEmpty()) { emailField.setPromptText("Вы не ввели e-mail"); }
+        else if (!checkEmail(s)) {
+            emailField.clear();
+            emailField.setPromptText("Проверьте правильность ввода email");
+        }
+        else if (checkEmail(s)) {
+            Alert info = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.CANCEL);
+
+            JSONObject object = User.readJSON();
+            JSONObject userObject = object.getJSONObject(user.getLogin());
+            userObject.put("email", s);
+
+            try {
+                BufferedWriter out = new BufferedWriter(new FileWriter(User.class.getResource("/users.json").getPath()));
+                out.write(object.toString());
+                out.close();
+
+                info.setTitle("Успех");
+                info.setContentText("Вы успешно привязали email");
+                info.setHeaderText(null);
+                info.show();
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+
+        }
+    }
+
+    public boolean checkEmail(String s) {
+        Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
+        Matcher mat = pattern.matcher(s);
+
+        return mat.matches();
+    }
 
 
     // Работа с данными

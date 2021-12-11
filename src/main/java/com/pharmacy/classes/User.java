@@ -44,9 +44,21 @@ public class User {
 
     public String getLogin() { return login; }
     public String getPassword() { return password; }
-    public int getId() { return id; }
+
     public int getAccess() { return access; }
 
+    // Возвращает String Email если он есть у пользователя
+    // Возвращает null если его нет
+    public String getEmail() throws JSONException {
+        JSONObject user = readJSON().getJSONObject(login);
+        try { return user.getString("email"); }
+        catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
+    // Возвращает JSONObject файла users.json
     public static JSONObject readJSON() throws JSONException {
         InputStream is = User.class.getResourceAsStream("/users.json");
         String jsonTxt = new BufferedReader(
@@ -58,6 +70,8 @@ public class User {
 
         return jsonObject;
     }
+
+    // Возвращает сгенерированный String пароль
     static String generatePassword() {
         // Генерируем новый пароль
         int leftLimit = 48; // numeral '0'
@@ -74,7 +88,6 @@ public class User {
     }
 
     static public String resetPassword(String login) throws JSONException {
-
         String generatedPassword = generatePassword();
 
         JSONObject object = readJSON();
