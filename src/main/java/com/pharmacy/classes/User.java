@@ -13,10 +13,8 @@ import java.util.stream.Collectors;
 import java.util.Random;
 
 public class User {
-    private String login;
-    private String password;
-    private int id;
-    private int access;
+    private final String login;
+    private final String password;
 
     private JSONObject userJSON;
 
@@ -27,11 +25,8 @@ public class User {
 
     public User(String login, String password) throws JSONException {
         this.login = login;
-        userJSON = readJSON().getJSONObject(login);
-
-        this.password = userJSON.getString("password");
-        this.id = userJSON.getInt("id");
-        this.access = userJSON.getInt("access");
+        this.password = password;
+        //userJSON = readJSON().getJSONObject(login);
     }
 
     public void checkUser() throws JSONException {
@@ -42,10 +37,13 @@ public class User {
         System.out.println(user.getString("access"));
     }
 
+    public JSONObject getUserJSON() {return userJSON;}
     public String getLogin() { return login; }
     public String getPassword() { return password; }
-
-    public int getAccess() { return access; }
+    public int getAccess() throws JSONException {
+        System.out.println("access" + readJSON().getJSONObject(login).getInt("access"));
+        return readJSON().getJSONObject(login).getInt("access");
+    }
 
     // Возвращает String Email если он есть у пользователя
     // Возвращает null если его нет
@@ -72,7 +70,7 @@ public class User {
     }
 
     // Возвращает сгенерированный String пароль
-    static String generatePassword() {
+    public static String generatePassword() {
         // Генерируем новый пароль
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
@@ -126,4 +124,6 @@ public class User {
             }
         }
     }
+
+
 }

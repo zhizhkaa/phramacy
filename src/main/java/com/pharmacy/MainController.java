@@ -214,6 +214,55 @@ public class MainController {
     }
     @FXML private Pane accountsAdmin;
 
+    // Создание аккаунта
+        @FXML private TextField newUserLogin;
+        //@FXML private TextField newUserFIO;         // TODO из этого поля надо будет делать внос в базу данных,
+                                                    // TODO так же надо добавить другие поля из базы
+        //@FXML private ChoiceBox newUserPosition;    // TODO этот ChoiceBox Надо заполнять значениями из таблицы "Должности"
+        @FXML private ToggleGroup newUserAccess;
+
+        // Поля Login, Access заносятся в json
+        // Поля FIO, Position заносятся в БД
+
+    // Нажаттие кноки "Создать аккаунт"
+    public void onCreateNewUserPressed() throws JSONException {
+        //TODO Нужна проверить существует ли еще пользователь с таким именем
+        //  Нужно проверить заполнены ли все поля , если не заполнены .setPromptTex("не ввели логин")
+        //  Если что-то еще обнаружиться то и они нужны
+        String login = newUserLogin.getText();
+        String password = User.generatePassword();
+        int intAccess;
+
+        RadioButton selectedRadioButton = (RadioButton) newUserAccess.getSelectedToggle();
+        String access = selectedRadioButton.getText();
+        if (access.equals("пользователь")) { intAccess = 0; }
+        else { intAccess = 1; }
+
+        JSONObject object = User.readJSON();
+        JSONObject userObject = new JSONObject();
+        userObject.put("password", password);
+        userObject.put("access", intAccess);
+        // userObject.put("id", id);    TODO этот id надо получить из таблицы сотрудники
+        object.put(login, userObject);
+
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(User.class.getResource("/users.json").getPath()));
+            out.write(object.toString());
+            out.close();
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        Alert newUserAlert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK);
+        newUserAlert.setTitle("Новый пользователь");
+        newUserAlert.setHeaderText("Создан новый пользователь");
+        newUserAlert.setContentText("Логин: " + login + "\nПароль: " + password + "\nДоступ: " + access);
+        newUserAlert.show();
+    }
+
+    // TODO Удаление аккаунта
+
     // Статистика сервера
     public void onStatsAButtonPressed() {
         accountSettings.setVisible(false);
