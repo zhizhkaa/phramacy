@@ -1,6 +1,8 @@
 package com.pharmacy;
 
 import com.pharmacy.classes.User;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
@@ -9,10 +11,13 @@ import org.json.JSONObject;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainController {
+
 
     /*
     Я немного изменил структуру этого дока.
@@ -171,8 +176,6 @@ public class MainController {
             catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-
-
         }
     }
 
@@ -205,19 +208,49 @@ public class MainController {
     @FXML private Pane reports;
 
     // Работа с аккаунтами
-    public void onAccAButtonPressed() {
+    public void onAccAButtonPressed() throws JSONException {
         accountSettings.setVisible(false);
         tables.setVisible(false);
         reports.setVisible(false);
         accountsAdmin.setVisible(true);
         statsAdmin.setVisible(false);
+
+        updateChoiceBox(userLogins);
+
+        userLogins.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+                try {
+                    int intAccess = User.readJSON().getJSONObject(t1).getInt("access");
+                    if (intAccess == 0) { chosenUserAccess.setText("Пользователь"); }
+                    else {  chosenUserAccess.setText("Администратор"); }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
+
+    public void updateChoiceBox(ChoiceBox box) throws JSONException {
+        // Заполнение ChoiceBox с пользователями
+        if (!box.getItems().equals(null)) { box.getItems().clear(); } // TODO вот на эту строку ругается
+        JSONObject object = User.readJSON();
+        Iterator<String> logins = object.keys();
+
+        while (logins.hasNext()) {
+            String login = logins.next();
+            if (object.get(login) instanceof JSONObject) {
+                userLogins.getItems().add(login);
+            }
+        }
+    }
+
     @FXML private Pane accountsAdmin;
 
     // Создание аккаунта
         @FXML private TextField newUserLogin;
         //@FXML private TextField newUserFIO;         // TODO из этого поля надо будет делать внос в базу данных,
-                                                    // TODO так же надо добавить другие поля из базы
+                                                    // TODO так же надо добавить другие поля необходимые для базы
         //@FXML private ChoiceBox newUserPosition;    // TODO этот ChoiceBox Надо заполнять значениями из таблицы "Должности"
         @FXML private ToggleGroup newUserAccess;
 
@@ -253,7 +286,7 @@ public class MainController {
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
+        updateChoiceBox(userLogins);
         Alert newUserAlert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK);
         newUserAlert.setTitle("Новый пользователь");
         newUserAlert.setHeaderText("Создан новый пользователь");
@@ -262,6 +295,41 @@ public class MainController {
     }
 
     // TODO Удаление аккаунта
+
+        @FXML private ChoiceBox<String> userLogins;
+        @FXML private TextField chosenUserAccess;
+
+    // Нажатие кнопки "Удалить аккаунт"
+    //TODO Здесь нужна проверка на то что ты сам себя не удалишьы
+    public void onDeleteUserButtonPressed() throws JSONException {
+        String login = userLogins.getSelectionModel().getSelectedItem();
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Подтверждение удаления аккаунта");
+        alert.setHeaderText("Вы уверены что хотите удалить аккаунт " + login + "?");
+        alert.setContentText("Нажмите ОК для подтверждения");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            JSONObject object = User.readJSON();
+            object.remove(login);
+
+            // TODO Структуру от сюда
+            try {
+                BufferedWriter out = new BufferedWriter(new FileWriter(User.class.getResource("/users.json").getPath()));
+                out.write(object.toString());
+                out.close();
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            updateChoiceBox(userLogins);
+            // TODO До сюда можно бахнуть в отдельный метод в классе User
+
+            // TODO добавить окошечко о том что пользователь удалён
+        }
+
+    }
 
     // Статистика сервера
     public void onStatsAButtonPressed() {

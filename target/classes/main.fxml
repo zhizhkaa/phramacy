@@ -53,7 +53,7 @@
       </Label>
    </AnchorPane>
    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="599.0" prefWidth="334.0">
-      <Pane fx:id="accountSettings" prefHeight="600.0" prefWidth="600.0">
+      <Pane fx:id="accountSettings" prefHeight="600.0" prefWidth="600.0" visible="false">
          <AnchorPane layoutX="21.0" layoutY="26.0" prefHeight="136.0" prefWidth="559.0">
             <Label layoutX="40.0" layoutY="58.0" text="Имя пользователя:">
                <font>
@@ -174,7 +174,7 @@
             </font>
          </Label>
       </Pane>
-      <Pane fx:id="accountsAdmin" prefHeight="599.0" prefWidth="586.0" visible="false">
+      <Pane fx:id="accountsAdmin" prefHeight="599.0" prefWidth="586.0">
          <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="559.0">
             <Label layoutX="14.0" layoutY="14.0" text="Создание аккаунта">
                <font>
@@ -191,15 +191,15 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField layoutX="175.0" layoutY="49.0" prefWidth="150.0" />
-            <ChoiceBox layoutX="175.0" layoutY="108.0" prefWidth="150.0" />
-            <TextField layoutX="175.0" layoutY="77.0" prefWidth="150.0" />
+            <TextField fx:id="newUserLogin" layoutX="175.0" layoutY="49.0" prefWidth="150.0" />
+            <ChoiceBox fx:id="newUserPosition" layoutX="175.0" layoutY="108.0" prefWidth="150.0" />
+            <TextField fx:id="newUserFIO" layoutX="175.0" layoutY="77.0" prefWidth="150.0" />
             <Label layoutX="36.0" layoutY="52.0" prefHeight="20.0" prefWidth="139.0" text="Логин пользователя:">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Button layoutX="206.0" layoutY="169.0" mnemonicParsing="false" text="Создать аккаунт">
+            <Button layoutX="206.0" layoutY="169.0" mnemonicParsing="false" onAction="#onCreateNewUserPressed" text="Создать аккаунт">
                <font>
                   <Font size="14.0" />
                </font>
@@ -207,9 +207,9 @@
             <AnchorPane layoutX="176.0" layoutY="134.0" prefHeight="27.0" prefWidth="207.0">
                <RadioButton layoutY="5.0" mnemonicParsing="false" selected="true" text="пользователь">
                   <toggleGroup>
-                     <ToggleGroup fx:id="userAccess" />
+                     <ToggleGroup fx:id="newUserAccess" />
                   </toggleGroup></RadioButton>
-               <RadioButton layoutX="106.0" layoutY="7.0" mnemonicParsing="false" text="администратор" toggleGroup="$userAccess" />
+               <RadioButton layoutX="106.0" layoutY="7.0" mnemonicParsing="false" text="администратор" toggleGroup="$newUserAccess" />
             </AnchorPane>
             <Label layoutX="136.0" layoutY="138.0" text="Роль:">
                <font>
@@ -228,7 +228,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <ChoiceBox layoutX="175.0" layoutY="48.0" prefWidth="150.0" />
+            <ChoiceBox fx:id="userLogins" layoutX="175.0" layoutY="48.0" prefWidth="150.0" />
             <Label layoutX="43.0" layoutY="87.0" text="ФИО пользователя:">
                <font>
                   <Font size="14.0" />
@@ -240,8 +240,8 @@
                </font>
             </Label>
             <TextField layoutX="175.0" layoutY="84.0" prefWidth="150.0" />
-            <TextField layoutX="175.0" layoutY="112.0" prefWidth="150.0" />
-            <Button layoutX="204.0" layoutY="155.0" mnemonicParsing="false" text="Удалить аккаунт">
+            <TextField fx:id="chosenUserAccess" layoutX="175.0" layoutY="112.0" prefWidth="150.0" />
+            <Button layoutX="204.0" layoutY="155.0" mnemonicParsing="false" onAction="#onDeleteUserButtonPressed" text="Удалить аккаунт">
                <font>
                   <Font size="14.0" />
                </font>
