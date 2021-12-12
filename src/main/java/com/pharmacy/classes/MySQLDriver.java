@@ -82,7 +82,7 @@ public class MySQLDriver {
             ResultSet rs = ps.executeQuery(); // можно думать, что это курсор - позволяет изменять данные бд на основе запроса ps
             // Пока есть запросы в очереди - обрабатываем
             while (!preparedQueries.isEmpty()) {
-                nextQuery = preparedQueries.poll();
+                nextQuery = preparedQueries.peek();
                 switch (nextQuery.type) {
                     case Update:
                         rs.absolute(nextQuery.row);
@@ -98,7 +98,6 @@ public class MySQLDriver {
                         for (Iterator<Map.Entry<String, Object>> i = nextQuery.values.entrySet().iterator(); i.hasNext();) {
                             Map.Entry<String, Object> e = i.next();
                             rs.updateObject(e.getKey(), e.getValue());
-                            i.remove();
                         }
                         rs.insertRow();
                         break;
@@ -106,14 +105,46 @@ public class MySQLDriver {
                         System.out.println("executePreparedQueries(): wrong queryTypes value");
                         break;
                 }
+                preparedQueries.remove();
             }
         }
         // Если появляется ошибка - заканчивается соединение с MySQL
         catch (Exception e) {
+            PreparedQuery failedQuery = preparedQueries.poll();
+            StringBuilder failedQueryInfo = new StringBuilder();
+            switch (failedQuery.type) {
+                case Update:
+                    failedQueryInfo.append("Запрос на изменение ");
+                    failedQueryInfo.append("поля: ");
+                    failedQueryInfo.append(this.getColumnAlias(failedQuery.field));
+                    failedQueryInfo.append(' ');
+                    failedQueryInfo.append(failedQuery.field);
+                    failedQueryInfo.append(" на строке номер ");
+                    failedQueryInfo.append(failedQuery.row);
+                    break;
+                case Delete:
+                    failedQueryInfo.append("Запрос на удаление строки номер ");
+                    failedQueryInfo.append(failedQuery.row);
+                    break;
+                case Insert:
+                    failedQueryInfo.append("Запрос на вставку новой строки со значениями:\n");
+                    for (Iterator<Map.Entry<String, Object>> i = failedQuery.values.entrySet().iterator(); i.hasNext();) {
+                        Map.Entry<String, Object> entry = i.next();
+                        failedQueryInfo.append(this.getColumnAlias(entry.getKey()));
+                        failedQueryInfo.append(' ');
+                        failedQueryInfo.append(entry.getKey());
+                        failedQueryInfo.append('=');
+                        failedQueryInfo.append(entry.getValue());
+                        failedQueryInfo.append('\n');
+                    }
+                    break;
+            }
             System.out.println(e.getMessage());
             Alert executeError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
             executeError.setTitle(this.tableName + " - Ошибка");
-            executeError.setHeaderText("Ошибка при выполнении запросов для записи в БД");
+            executeError.setHeaderText("Ошибка при выполнении запроса в БД\n" +
+                    failedQueryInfo.toString() +
+                    "\nЧтобы сохранить остальные изменения снова нажмите Сохранить");
             executeError.setContentText(e.getMessage());
             executeError.showAndWait();
         }
