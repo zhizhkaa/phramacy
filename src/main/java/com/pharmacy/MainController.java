@@ -204,7 +204,7 @@ public class MainController {
         VBox layout = new VBox();
         Scene scene = new Scene(layout, 600, 400);
         Stage stage = new Stage();
-        stage.setTitle(tableChoice.getSelectionModel().getSelectedItem().toString() + " - " + tableName);
+        stage.setTitle(tableChoice.getSelectionModel().getSelectedItem().toString());
         stage.setScene(scene);
         // Подготовка TableView
         TableView tv = new TableView();
@@ -242,12 +242,13 @@ public class MainController {
             @Override
             public void handle(ActionEvent event) {
                 // Для последующей вставки
-                List<TextField> inputs = new ArrayList<>(); // список полей вставки
+                List<TextField> textfields = new ArrayList<>(); // список полей вставки
                 List<String> columns = driver.getColumnsNames(); // список столбцов таблицы
                 // Создаём окно со вставкой
                 VBox newRow = new VBox();
                 Stage inputStage = new Stage();
                 Scene inputScene = new Scene(newRow, 400, 300);
+                inputStage.setTitle(stage.getTitle() + " - Новая строка...");
                 inputStage.initModality(Modality.WINDOW_MODAL);
                 inputStage.initOwner(layout.getScene().getWindow());
                 inputStage.setScene(inputScene);
@@ -257,29 +258,43 @@ public class MainController {
                     @Override
                     public void handle(ActionEvent event) {
                         HashMap<String, Object> values = new HashMap(); // для хранения пары имя столбца, новое значение
+                        List<String> inputs = new ArrayList<String>();
+                        for (Iterator<TextField> i_tf = textfields.iterator(); i_tf.hasNext();) {
+                            TextField e_tf = i_tf.next();
+                            if (!e_tf.getText().isEmpty()) {
+                                inputs.add(e_tf.getText());
+                            }
+                        }
                         // Если хотя бы одно поле заполнено
                         if (!inputs.isEmpty()) {
                             ObservableList new_row = FXCollections.observableArrayList(); // новая строка для структуры данных
                             Iterator<String> i_col = columns.iterator();
-                            for (Iterator<TextField> i_text = inputs.iterator(); i_text.hasNext() && i_col.hasNext();) {
+                            for (Iterator<String> i_input = inputs.iterator(); i_input.hasNext() && i_col.hasNext();) {
                                 String colName = i_col.next();
-                                TextField e_text = i_text.next();
-                                values.put(colName, e_text.getText());
-                                new_row.add(e_text.getText());
+                                String e_text = i_input.next();
+                                values.put(colName, e_text);
+                                new_row.add(e_text);
                             }
                             // Сохранение как запроса к бд
                             driver.inputRow(tv, values, new_row);
                             // Выход из формы заполнения вставки
                             inputStage.close();
                         }
-
+                        else {
+                            Alert inputError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                            inputError.setTitle(inputStage.getTitle() + " - Ошибка");
+                            inputError.setHeaderText("Ошибка при вводе строки");
+                            inputError.setContentText("Вы не заполнили ни одного поля");
+                            inputError.showAndWait();
+                        }
                     }
                 });
                 // Итерация по всем полям - заполнение списка полей
                 for (Iterator<TableColumn> i = tv.getColumns().iterator(); i.hasNext();) {
                     TableColumn e = i.next();
-                    TextField tf = new TextField(e.getText());
-                    inputs.add(tf);
+                    TextField tf = new TextField();
+                    tf.setPromptText(e.getText());
+                    textfields.add(tf);
                     newRow.getChildren().add(tf);
                 }
                 newRow.getChildren().add(ok);

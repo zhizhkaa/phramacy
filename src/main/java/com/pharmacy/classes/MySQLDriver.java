@@ -10,10 +10,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -113,6 +111,11 @@ public class MySQLDriver {
         // Если появляется ошибка - заканчивается соединение с MySQL
         catch (Exception e) {
             System.out.println(e.getMessage());
+            Alert executeError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+            executeError.setTitle(this.tableName + " - Ошибка");
+            executeError.setHeaderText("Ошибка при выполнении запросов для записи в БД");
+            executeError.setContentText(e.getMessage());
+            executeError.showAndWait();
         }
     }
 
@@ -208,6 +211,11 @@ public class MySQLDriver {
             tv.setItems(data);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            Alert connectionError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+            connectionError.setTitle(this.tableName + " - Ошибка");
+            connectionError.setHeaderText("Ошибка при получении таблицы");
+            connectionError.setContentText(e.getMessage());
+            connectionError.showAndWait();
         }
     }
 }
