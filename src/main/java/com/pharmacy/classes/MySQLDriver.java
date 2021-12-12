@@ -1,11 +1,7 @@
 package com.pharmacy.classes;
 
 import java.sql.*;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Iterator;
+import java.util.*;
 
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,6 +20,7 @@ import javafx.util.Callback;
 
 // Используется для подключения к БД для работы с кокретной таблицей
 public class MySQLDriver {
+    private List<String> columns = new ArrayList<String>();
     private ObservableList<ObservableList> data = FXCollections.observableArrayList();  // Структура для хранения таблицы
 
     private String connectionUrl;
@@ -69,6 +66,10 @@ public class MySQLDriver {
         this.user = user;
         this.password = password;
         this.tableName = tableName;
+    }
+
+    public List<String> getColumnsNames() {
+        return columns;
     }
 
     // Для выполнения сохранённых/подготовленных запросов
@@ -131,6 +132,31 @@ public class MySQLDriver {
         preparedQueries.add(new PreparedQuery(values));
     }
 
+    // Для возврата синонима названия столбца
+    public String getColumnAlias(String col_name) {
+        // TODO Заполнить для всех таблиц
+        switch (tableName) {
+            case "employees":
+                switch (col_name) {
+                    case "employee_id": return "Код Сотрудника";
+                    case "surname": return "Фамилия";
+                    case "name": return "Имя";
+                    case "middle_name": return "Отчество";
+                    case "phone_number": return "Номер телефона";
+                    case "position_id": return "Код Должности";
+                }
+            case "medicine":
+                switch (col_name) {
+                    case "medicine_id": return "Код Препарата";
+                    case "trade_name": return "Торговое Название";
+                    case "international_name": return "Международное Название";
+                    case "chemical_name": return "Химическое Название";
+                    case "atc_code": return "Код АТХ";
+                }
+        }
+        return col_name;
+    }
+
     // Для заполнения TableView данными запроса
     // src: https://stackoverflow.com/questions/18941093/how-to-fill-up-a-tableview-with-database-data
     public void buildData(TableView tv) {
@@ -144,7 +170,9 @@ public class MySQLDriver {
             for(int i=0 ; i<rs.getMetaData().getColumnCount(); i++){
                 //We are using non property style for making dynamic table
                 final int j = i;
-                TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i+1));
+                String col_name = rs.getMetaData().getColumnName(i+1);
+                columns.add(col_name);
+                TableColumn col = new TableColumn(this.getColumnAlias(col_name));
                 col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
                     public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
                         return new SimpleStringProperty(param.getValue().get(j).toString());
@@ -159,12 +187,11 @@ public class MySQLDriver {
                         int cell_col = cellEditEvent.getTablePosition().getColumn();
                         data.get(cell_row).set(cell_col, cellEditEvent.getNewValue());
                         // сохранение запроса
-                        preparedQueries.add(new PreparedQuery(cell_row+1, col.getText(), cellEditEvent.getNewValue()));
+                        preparedQueries.add(new PreparedQuery(cell_row+1, col_name, cellEditEvent.getNewValue()));
                     }
                 });
                 col.setCellFactory(TextFieldTableCell.forTableColumn());
                 tv.getColumns().addAll(col);
-                System.out.println("Column ["+i+"] ");
             }
             // Data added to ObservableList
             while(rs.next()){
@@ -174,7 +201,7 @@ public class MySQLDriver {
                     //Iterate Column
                     row.add(rs.getString(i));
                 }
-                System.out.println("Row [1] added "+row );
+                System.out.println("MySQLDriver.buildRow added: "+row );
                 data.add(row);
             }
             //FINALLY ADDED TO TableView

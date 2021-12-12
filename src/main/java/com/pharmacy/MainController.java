@@ -243,7 +243,7 @@ public class MainController {
             public void handle(ActionEvent event) {
                 // Для последующей вставки
                 List<TextField> inputs = new ArrayList<>(); // список полей вставки
-                List<TableColumn> columns = new ArrayList<>(); // список столбцов таблицы
+                List<String> columns = driver.getColumnsNames(); // список столбцов таблицы
                 // Создаём окно со вставкой
                 VBox newRow = new VBox();
                 Stage inputStage = new Stage();
@@ -260,11 +260,11 @@ public class MainController {
                         // Если хотя бы одно поле заполнено
                         if (!inputs.isEmpty()) {
                             ObservableList new_row = FXCollections.observableArrayList(); // новая строка для структуры данных
-                            Iterator<TableColumn> i_col = columns.iterator();
+                            Iterator<String> i_col = columns.iterator();
                             for (Iterator<TextField> i_text = inputs.iterator(); i_text.hasNext() && i_col.hasNext();) {
-                                TableColumn e_col = i_col.next();
+                                String colName = i_col.next();
                                 TextField e_text = i_text.next();
-                                values.put(e_col.getText(), e_text.getText());
+                                values.put(colName, e_text.getText());
                                 new_row.add(e_text.getText());
                             }
                             // Сохранение как запроса к бд
@@ -275,12 +275,11 @@ public class MainController {
 
                     }
                 });
-                // Итерация по всем полям - заполнение списков
+                // Итерация по всем полям - заполнение списка полей
                 for (Iterator<TableColumn> i = tv.getColumns().iterator(); i.hasNext();) {
                     TableColumn e = i.next();
                     TextField tf = new TextField(e.getText());
                     inputs.add(tf);
-                    columns.add(e);
                     newRow.getChildren().add(tf);
                 }
                 newRow.getChildren().add(ok);
