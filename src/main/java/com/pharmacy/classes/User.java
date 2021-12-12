@@ -69,6 +69,17 @@ public class User {
         return jsonObject;
     }
 
+    public static void updateJSON(JSONObject jsonObject) {
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(User.class.getResource("/users.json").getPath()));
+            out.write(jsonObject.toString());
+            out.close();
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     // Возвращает сгенерированный String пароль
     public static String generatePassword() {
         // Генерируем новый пароль
@@ -94,14 +105,7 @@ public class User {
         if (user != null) {
             user.put("password", generatedPassword);
             object.put(login, user);
-            try {
-                BufferedWriter out = new BufferedWriter(new FileWriter(User.class.getResource("/users.json").getPath()));
-                out.write(object.toString());
-                out.close();
-            }
-            catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+            updateJSON(object);
             return generatedPassword;
         }
         return null;

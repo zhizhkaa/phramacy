@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -43,6 +44,7 @@ public class MainController {
     @FXML private Button accountsButton;
     @FXML private Button statsButton;
 
+    // Метод задаёт юзера для сеанса
     public void setUser(User user) throws JSONException {
         this.user = user;
         userName.setText(user.getLogin());
@@ -439,7 +441,7 @@ public class MainController {
         // Поля Login, Access заносятся в json
         // Поля FIO, Position заносятся в БД
 
-    // Нажаттие кноки "Создать аккаунт"
+    // Нажатие кноки "Создать аккаунт"
     public void onCreateNewUserPressed() throws JSONException {
         //TODO Нужна проверить существует ли еще пользователь с таким именем
         //  Нужно проверить заполнены ли все поля , если не заполнены .setPromptTex("не ввели логин")
@@ -460,14 +462,8 @@ public class MainController {
         // userObject.put("id", id);    TODO этот id надо получить из таблицы сотрудники
         object.put(login, userObject);
 
-        try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(User.class.getResource("/users.json").getPath()));
-            out.write(object.toString());
-            out.close();
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        User.updateJSON(object);
+
         updateChoiceBox(userLogins);
         Alert newUserAlert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK);
         newUserAlert.setTitle("Новый пользователь");
@@ -496,17 +492,7 @@ public class MainController {
             JSONObject object = User.readJSON();
             object.remove(login);
 
-            // TODO Структуру от сюда
-            try {
-                BufferedWriter out = new BufferedWriter(new FileWriter(User.class.getResource("/users.json").getPath()));
-                out.write(object.toString());
-                out.close();
-            }
-            catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-            updateChoiceBox(userLogins);
-            // TODO До сюда можно бахнуть в отдельный метод в классе User
+            User.updateJSON(object);
 
             // TODO добавить окошечко о том что пользователь удалён
         }
