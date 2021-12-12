@@ -7,6 +7,7 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -120,18 +121,19 @@
             <TextField fx:id="emailField" layoutX="40.0" layoutY="57.0" prefHeight="26.0" prefWidth="250.0" promptText="E-mail" />
          </AnchorPane>
       </Pane>
-      <Pane fx:id="tables" layoutX="-1.0" prefHeight="600.0" prefWidth="586.0" visible="false">
+      <Pane fx:id="tables" layoutX="-1.0" prefHeight="600.0" prefWidth="586.0">
          <Label layoutX="36.0" layoutY="31.0" text="Таблица: ">
             <font>
                <Font size="14.0" />
             </font>
          </Label>
-         <ChoiceBox layoutX="96.0" layoutY="29.0" prefHeight="25.0" prefWidth="197.0" />
-         <Button layoutX="35.0" layoutY="74.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="122.0" text="Вывести таблицу" />
-         <Button layoutX="171.0" layoutY="74.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="122.0" text="Вывести таблицу в новом окне" textAlignment="CENTER" wrapText="true" />
-         <Button layoutX="347.0" layoutY="29.0" mnemonicParsing="false" text="Сохранить всё" />
+         <ChoiceBox fx:id="tableChoice" layoutX="96.0" layoutY="29.0" prefHeight="25.0" prefWidth="197.0" />
+         <Button layoutX="35.0" layoutY="74.0" mnemonicParsing="false" onAction="#onDisplayTableButtonPressed" prefHeight="48.0" prefWidth="122.0" text="Вывести таблицу" />
+         <Button layoutX="171.0" layoutY="74.0" mnemonicParsing="false" onAction="#onDisplayWindowedTableButtonPressed" prefHeight="48.0" prefWidth="122.0" text="Вывести таблицу в новом окне" textAlignment="CENTER" wrapText="true" />
+         <Button fx:id="saveAllButton" layoutX="347.0" layoutY="29.0" mnemonicParsing="false" text="Сохранить" />
          <Button layoutX="456.0" layoutY="29.0" mnemonicParsing="false" text="Закрыть" />
          <Label layoutX="26.0" layoutY="177.0" text="Ну надо как-то вывести MYSQL, но пока не знаю как наверное через table" wrapText="true" />
+         <TableView fx:id="tvTest" editable="true" layoutX="36.0" layoutY="210.0" prefHeight="300.0" prefWidth="514.0" tableMenuButtonVisible="true" />
       </Pane>
       <Pane fx:id="reports" layoutX="-1.0" prefHeight="600.0" prefWidth="586.0" visible="false">
          <Label layoutX="71.0" layoutY="36.0" text="Форма:">
