@@ -295,9 +295,19 @@ public class MainController {
                     inputError.showAndWait();
                 }
                 else {
-                    mysql_user = tfUser.getText();
-                    mysql_pass = tfPass.getText();
-                    stage.close();
+                    try {
+                        Connection conn = DriverManager.getConnection(mysql_url, tfUser.getText(), tfPass.getText());
+                        mysql_user = tfUser.getText();
+                        mysql_pass = tfPass.getText();
+                        stage.close();
+                    }
+                    catch (Exception e) {
+                        Alert inputError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                        inputError.setTitle(stage.getTitle() + " - Ошибка");
+                        inputError.setHeaderText("Ошибка входа");
+                        inputError.setContentText("Неверные данные входа: " + e.getMessage());
+                        inputError.showAndWait();
+                    }
                 }
             }
         });

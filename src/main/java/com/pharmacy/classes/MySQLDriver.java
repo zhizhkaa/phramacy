@@ -261,7 +261,6 @@ public class MySQLDriver {
         return values;
     }
 
-
     // Для заполнения TableView данными запроса
     // src: https://stackoverflow.com/questions/18941093/how-to-fill-up-a-tableview-with-database-data
     public void buildData(TableView tv, String query) {
