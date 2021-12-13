@@ -117,6 +117,7 @@ public class AuthController {
 
                 if ((password.equals(user.getPassword()))) {
                     Stage stage = (Stage) authPane.getScene().getWindow();
+                    stage.setResizable(true);
                     PharmacyApplication.showMain(user, stage);
                 } else {
                     notification.setText("Неправильный логин/пароль");
