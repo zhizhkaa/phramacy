@@ -40,6 +40,7 @@ public class MainController {
      */
 
     private User user;
+    @FXML private Label authName;
 
     // Кнопки недоступные пользователю
     @FXML private Button accountsButton;
@@ -50,6 +51,7 @@ public class MainController {
         this.user = user;
         userName.setText(user.getLogin());
         int access = user.getAccess();
+        authName.setText("Авторизован:\n" + user.getLogin());
 
         if (access == 0) {
             role.setText("Пользватель");
