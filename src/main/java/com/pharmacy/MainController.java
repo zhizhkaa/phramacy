@@ -3,6 +3,8 @@ package com.pharmacy;
 import com.pharmacy.classes.User;
 import com.pharmacy.classes.MySQLDriver;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.*;
 import java.io.File;
@@ -27,12 +29,11 @@ import org.w3c.dom.Text;
 
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class MainController {
 
@@ -266,7 +267,7 @@ public class MainController {
     // TODO Придумать для url, root, password ввод
     String mysql_url = "jdbc:mysql://localhost:3306/pharmacy";
     String mysql_user = "root"; // TODO можно запросить в начале программы и сохранить в Jsone
-    String mysql_pass = "password";
+    String mysql_pass = "mikeqwer2246";
 
     // Для вывода таблиц в текущем окне
     public void onDisplayTableButtonPressed(ActionEvent event) {
@@ -277,7 +278,7 @@ public class MainController {
         // Удаляем существующие данные в табл
         tvTest.getItems().clear();
         tvTest.getColumns().clear();
-        driver.buildData(tvTest);
+        driver.buildData(tvTest, "default_select");
         saveAllButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -395,7 +396,7 @@ public class MainController {
         layout.getChildren().add(menuBar);
         layout.getChildren().add(tv);
         // Заполнение таблицы
-        driver.buildData(tv);
+        driver.buildData(tv, "default_select");
         stage.show();
     }
 
@@ -406,8 +407,101 @@ public class MainController {
         reports.setVisible(true);
         accountsAdmin.setVisible(false);
         statsAdmin.setVisible(false);
+
+        // TODO сделать заполнение cbReports при инициализации формы MainController
+        if (cbReports.getItems().isEmpty()) {
+            cbReports.getItems().add("Форма договора с производителем веществ");
+            cbReports.getItems().add("Производство серий препаратов цехами");
+            cbReports.getItems().add("Форма по разработке фармацевтической продукции");
+            cbReports.getItems().add("Поставщики веществ");
+            cbReports.getItems().add("Вещества и их поставщики");
+            cbReports.getItems().add("Список всех веществ компании");
+
+            cbReports.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+                    tvReports.getItems().clear();
+                    tvReports.getColumns().clear();
+                    MySQLDriver driver = new MySQLDriver(mysql_url, mysql_user, mysql_pass);
+                    String choice = cbReports.getItems().get((Integer) number2).toString();
+                    InputStream is;
+                    String query;
+                    ArrayList<String> values;
+                    switch (choice) {
+                        case "Форма договора с производителем веществ":
+                            is = MainController.class.getResourceAsStream("/queries/query1.sql");
+                            query = new BufferedReader(
+                                    new InputStreamReader(is, StandardCharsets.UTF_8))
+                                    .lines()
+                                    .collect(Collectors.joining("\n"));
+                            values = driver.getColumn("medicine_warehouse", "serial");
+                            for (int i = 0; i < values.size(); i++) {
+                                if (i!=values.size()-1) {
+                                    query = query.replace("GENERATE_PIVOT\n", "(SELECT COUNT(*) FROM Src WHERE serial = " + values.get(i) + " AND ИД=Src.employee_id)\"серия "  +values.get(i) + "\",\n GENERATE_PIVOT\n");
+                                }
+                                else {
+                                    query = query.replace("GENERATE_PIVOT\n", "(SELECT COUNT(*) FROM Src WHERE serial = " + values.get(i) + " AND ИД=Src.employee_id)\"серия " + values.get(i) + "\"\n");
+                                }
+                            }
+                            driver.buildData(tvReports, query);
+                            break;
+                        case "Производство серий препаратов цехами":
+                            is = MainController.class.getResourceAsStream("/queries/query2.sql");
+                            query = new BufferedReader(
+                                    new InputStreamReader(is, StandardCharsets.UTF_8))
+                                    .lines()
+                                    .collect(Collectors.joining("\n"));
+                            values = driver.getColumn("medicine_warehouse", "serial");
+                            for (int i = 0; i < values.size(); i++) {
+                                if (i!=values.size()-1) {
+                                    query = query.replace("GENERATE_PIVOT\n", "(SELECT COUNT(*) FROM Src WHERE serial = " + values.get(i) + " AND ЦЕХ=Src.workshop_number)\"серия "  +values.get(i) + "\",\n GENERATE_PIVOT\n");
+                                }
+                                else {
+                                    query = query.replace("GENERATE_PIVOT\n", "(SELECT COUNT(*) FROM Src WHERE serial = " + values.get(i) + " AND ЦЕХ=Src.workshop_number)\"серия " + values.get(i) + "\"\n");
+                                }
+                            }
+                            driver.buildData(tvReports, query);
+                            break;
+                        case "Форма по разработке фармацевтической продукции":
+                            is = MainController.class.getResourceAsStream("/queries/query3.sql");
+                            query = new BufferedReader(
+                                    new InputStreamReader(is, StandardCharsets.UTF_8))
+                                    .lines()
+                                    .collect(Collectors.joining("\n"));
+                            driver.buildData(tvReports, query);
+                            break;
+                        case "Поставщики веществ":
+                            is = MainController.class.getResourceAsStream("/queries/query4.sql");
+                            query = new BufferedReader(
+                                    new InputStreamReader(is, StandardCharsets.UTF_8))
+                                    .lines()
+                                    .collect(Collectors.joining("\n"));
+                            driver.buildData(tvReports, query);
+                            break;
+                        case "Вещества и их поставщики":
+                            is = MainController.class.getResourceAsStream("/queries/query5.sql");
+                            query = new BufferedReader(
+                                    new InputStreamReader(is, StandardCharsets.UTF_8))
+                                    .lines()
+                                    .collect(Collectors.joining("\n"));
+                            driver.buildData(tvReports, query);
+                            break;
+                        case "Список всех веществ компании":
+                            is = MainController.class.getResourceAsStream("/queries/query6.sql");
+                            query = new BufferedReader(
+                                    new InputStreamReader(is, StandardCharsets.UTF_8))
+                                    .lines()
+                                    .collect(Collectors.joining("\n"));
+                            driver.buildData(tvReports, query);
+                            break;
+                    }
+                }
+            });
+        }
     }
     @FXML private Pane reports;
+        @FXML private ChoiceBox cbReports;
+        @FXML private TableView tvReports;
 
 
     // Работа с аккаунтами

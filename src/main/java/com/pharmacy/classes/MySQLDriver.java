@@ -1,7 +1,12 @@
 package com.pharmacy.classes;
 
 import java.sql.*;
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Iterator;
 
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
@@ -247,12 +252,14 @@ public class MySQLDriver {
 
     // Для заполнения TableView данными запроса
     // src: https://stackoverflow.com/questions/18941093/how-to-fill-up-a-tableview-with-database-data
-    public boolean buildData(TableView tv) {
+    public boolean buildData(TableView tv, String query) {
         if (tableName.isEmpty()) {
             System.out.println("buildData(): no tableName given, unable to build data for TableView");
             return false;
         }
-        final String query = "SELECT * FROM " + tableName;
+        if ("default_select".equals(query)) {
+            query = "SELECT * FROM " + tableName;
+        }
 
         try (Connection conn = DriverManager.getConnection(this.connectionUrl, this.user, this.password); // Подключение к БД
              PreparedStatement ps = conn.prepareStatement(query);
