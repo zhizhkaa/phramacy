@@ -16,6 +16,8 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import javax.xml.transform.Result;
+
 // Используется для подключения к БД для работы с кокретной таблицей
 public class MySQLDriver {
     private List<String> columns = new ArrayList<String>();
@@ -64,6 +66,11 @@ public class MySQLDriver {
         this.user = user;
         this.password = password;
         this.tableName = tableName;
+    }
+    public MySQLDriver(String connectionUrl, String user, String password) {
+        this.connectionUrl = connectionUrl;
+        this.user = user;
+        this.password = password;
     }
 
     public List<String> getColumnsNames() {
@@ -191,9 +198,49 @@ public class MySQLDriver {
         return col_name;
     }
 
+    // Для получения статистики сервера
+    public ArrayList<String> getServerStatus(List<String> variables) {
+        ArrayList<String> values = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pharmacy", "root", "mikeqwer2246")) {
+            PreparedStatement ps;
+            ResultSet rs;
+            int col_index = 0;
+            for (String var_name : variables) {
+                if ("maxQueryTime".equals(var_name)) {
+                    ps = conn.prepareStatement("SELECT ROUND(MAX(sum_timer_wait)/1000000) FROM performance_schema.events_statements_summary_by_digest WHERE schema_name = \'pharmacy\'");
+                    col_index = 1;
+                }
+                else if ("avgQueryTime".equals(var_name)) {
+                    ps = conn.prepareStatement("SELECT ROUND((SUM(sum_timer_wait)/SUM(count_star))/1000000) FROM performance_schema.events_statements_summary_by_digest WHERE schema_name = \'pharmacy\'");
+                    col_index = 1;
+                }
+                else {
+                    ps = conn.prepareStatement("SHOW STATUS LIKE \'" + var_name + '\'');
+                    col_index = 2;
+                }
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    values.add(rs.getString(col_index));
+                }
+                else {
+                    values.add("error");
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return values;
+    }
+
+
     // Для заполнения TableView данными запроса
     // src: https://stackoverflow.com/questions/18941093/how-to-fill-up-a-tableview-with-database-data
-    public void buildData(TableView tv) {
+    public boolean buildData(TableView tv) {
+        if (tableName.isEmpty()) {
+            System.out.println("buildData(): no tableName given, unable to build data for TableView");
+            return false;
+        }
         final String query = "SELECT * FROM " + tableName;
 
         try (Connection conn = DriverManager.getConnection(this.connectionUrl, this.user, this.password); // Подключение к БД
@@ -247,6 +294,8 @@ public class MySQLDriver {
             connectionError.setHeaderText("Ошибка при получении таблицы");
             connectionError.setContentText(e.getMessage());
             connectionError.showAndWait();
+            return false;
         }
+        return true;
     }
 }

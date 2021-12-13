@@ -336,7 +336,33 @@ public class MainController {
         reports.setVisible(false);
         accountsAdmin.setVisible(false);
         statsAdmin.setVisible(true);
+
+        MySQLDriver driver = new MySQLDriver(mysql_url, mysql_user, mysql_pass);
+        ArrayList<String> variables = new ArrayList<>(Arrays.asList("Queries", "Uptime", "maxQueryTime", "avgQueryTime", "Max_used_connections", "Open_tables"));
+        ArrayList<String> values = driver.getServerStatus(variables);
+
+        StringBuilder uptimeOut = new StringBuilder();
+        int uptimeIn = Integer.parseInt(values.get(1));
+        uptimeOut.append((int)uptimeIn/3600);
+        uptimeOut.append(" час. ");
+        uptimeOut.append((int)(uptimeIn%3600/60));
+        uptimeOut.append(" мин. ");
+        uptimeOut.append((int)(uptimeIn%3600%60));
+        uptimeOut.append(" сек.");
+
+        queryCount.setText(values.get(0));
+        uptime.setText(uptimeOut.toString());
+        maxQueryTime.setText(values.get(2));
+        avgQueryTime.setText(values.get(3));
+        userCount.setText(values.get(4));
+        openedTables.setText(values.get(5));
     }
     @FXML private Pane statsAdmin;
-
+        @FXML private TextField userCount;
+        @FXML private TextField queryCount;
+        @FXML private TextField uptime;
+        @FXML private TextField maxQueryTime;
+        @FXML private TextField avgQueryTime;
+        @FXML private TextField openedTables;
+        @FXML private TextField lastBackupDate;
 }
