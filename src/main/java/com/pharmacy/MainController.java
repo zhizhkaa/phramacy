@@ -5,6 +5,7 @@ import com.pharmacy.classes.MySQLDriver;
 
 import java.sql.*;
 import java.util.*;
+import java.io.File;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.json.JSONException;
@@ -292,7 +294,7 @@ public class MainController {
         VBox layout = new VBox();
         Scene scene = new Scene(layout, 600, 400);
         Stage stage = new Stage();
-        stage.setTitle(tableChoice.getSelectionModel().getSelectedItem().toString() + " - " + tableName);
+        stage.setTitle(tableChoice.getSelectionModel().getSelectedItem().toString());
         stage.setScene(scene);
         // Подготовка TableView
         TableView tv = new TableView();
@@ -330,12 +332,13 @@ public class MainController {
             @Override
             public void handle(ActionEvent event) {
                 // Для последующей вставки
-                List<TextField> inputs = new ArrayList<>(); // список полей вставки
-                List<TableColumn> columns = new ArrayList<>(); // список столбцов таблицы
+                List<TextField> textfields = new ArrayList<>(); // список полей вставки
+                List<String> columns = driver.getColumnsNames(); // список столбцов таблицы
                 // Создаём окно со вставкой
                 VBox newRow = new VBox();
                 Stage inputStage = new Stage();
                 Scene inputScene = new Scene(newRow, 400, 300);
+                inputStage.setTitle(stage.getTitle() + " - Новая строка...");
                 inputStage.initModality(Modality.WINDOW_MODAL);
                 inputStage.initOwner(layout.getScene().getWindow());
                 inputStage.setScene(inputScene);
@@ -345,30 +348,43 @@ public class MainController {
                     @Override
                     public void handle(ActionEvent event) {
                         HashMap<String, Object> values = new HashMap(); // для хранения пары имя столбца, новое значение
+                        List<String> inputs = new ArrayList<String>();
+                        for (Iterator<TextField> i_tf = textfields.iterator(); i_tf.hasNext();) {
+                            TextField e_tf = i_tf.next();
+                            if (!e_tf.getText().isEmpty()) {
+                                inputs.add(e_tf.getText());
+                            }
+                        }
                         // Если хотя бы одно поле заполнено
                         if (!inputs.isEmpty()) {
                             ObservableList new_row = FXCollections.observableArrayList(); // новая строка для структуры данных
-                            Iterator<TableColumn> i_col = columns.iterator();
-                            for (Iterator<TextField> i_text = inputs.iterator(); i_text.hasNext() && i_col.hasNext();) {
-                                TableColumn e_col = i_col.next();
-                                TextField e_text = i_text.next();
-                                values.put(e_col.getText(), e_text.getText());
-                                new_row.add(e_text.getText());
+                            Iterator<String> i_col = columns.iterator();
+                            for (Iterator<String> i_input = inputs.iterator(); i_input.hasNext() && i_col.hasNext();) {
+                                String colName = i_col.next();
+                                String e_text = i_input.next();
+                                values.put(colName, e_text);
+                                new_row.add(e_text);
                             }
                             // Сохранение как запроса к бд
                             driver.inputRow(tv, values, new_row);
                             // Выход из формы заполнения вставки
                             inputStage.close();
                         }
-
+                        else {
+                            Alert inputError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                            inputError.setTitle(inputStage.getTitle() + " - Ошибка");
+                            inputError.setHeaderText("Ошибка при вводе строки");
+                            inputError.setContentText("Вы не заполнили ни одного поля");
+                            inputError.showAndWait();
+                        }
                     }
                 });
-                // Итерация по всем полям - заполнение списков
+                // Итерация по всем полям - заполнение списка полей
                 for (Iterator<TableColumn> i = tv.getColumns().iterator(); i.hasNext();) {
                     TableColumn e = i.next();
-                    TextField tf = new TextField(e.getText());
-                    inputs.add(tf);
-                    columns.add(e);
+                    TextField tf = new TextField();
+                    tf.setPromptText(e.getText());
+                    textfields.add(tf);
                     newRow.getChildren().add(tf);
                 }
                 newRow.getChildren().add(ok);
@@ -582,7 +598,84 @@ public class MainController {
         reports.setVisible(false);
         accountsAdmin.setVisible(false);
         statsAdmin.setVisible(true);
+
+        MySQLDriver driver = new MySQLDriver(mysql_url, mysql_user, mysql_pass);
+        ArrayList<String> variables = new ArrayList<>(Arrays.asList("Queries", "Uptime", "maxQueryTime", "avgQueryTime", "Max_used_connections", "Open_tables"));
+        ArrayList<String> values = driver.getServerStatus(variables);
+
+        StringBuilder uptimeOut = new StringBuilder();
+        int uptimeIn = Integer.parseInt(values.get(1));
+        uptimeOut.append((int)uptimeIn/3600);
+        uptimeOut.append(" час. ");
+        uptimeOut.append((int)(uptimeIn%3600/60));
+        uptimeOut.append(" мин. ");
+        uptimeOut.append((int)(uptimeIn%3600%60));
+        uptimeOut.append(" сек.");
+
+        queryCount.setText(values.get(0));
+        uptime.setText(uptimeOut.toString());
+        maxQueryTime.setText(values.get(2));
+        avgQueryTime.setText(values.get(3));
+        userCount.setText(values.get(4));
+        openedTables.setText(values.get(5));
     }
     @FXML private Pane statsAdmin;
+        @FXML private TextField userCount;
+        @FXML private TextField queryCount;
+        @FXML private TextField uptime;
+        @FXML private TextField maxQueryTime;
+        @FXML private TextField avgQueryTime;
+        @FXML private TextField openedTables;
+        @FXML private TextField lastBackupDate;
+    // Кнопка выключения
+    public void onShutdownButtonPressed(ActionEvent event) {
+        // Создаём окно со вставкой
+        VBox sdBox = new VBox();
+        Stage sdStage = new Stage();
+        Scene sdScene = new Scene(sdBox, 400, 300);
+        sdStage.setTitle("Выключение сервера");
+        sdStage.initModality(Modality.WINDOW_MODAL);
+        sdStage.initOwner(sdBox.getScene().getWindow());
+        sdStage.setScene(sdScene);
+        // Текстовое поле подтверждения
+        TextField tf = new TextField();
+        tf.setPromptText("Напишите выключить, чтобы подтвердить");
+        // Кнопка ОК - отправка запроса
+        Button ok = new Button("ОК");
+        ok.setOnAction(e -> {
+            if ("выключить".equalsIgnoreCase(tf.getText())) {
+                try {
+                    Runtime.getRuntime().exec(new String[] {"cmd.exe", "/c", "sc", "stop", "MySQL80"});
+                    sdStage.close();
+                }
+                catch (Exception ex) {
+                    Alert inputError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                    inputError.setTitle(sdStage.getTitle() + " - Ошибка");
+                    inputError.setHeaderText("Ошибка при выключении:");
+                    inputError.setContentText(ex.getMessage());
+                    inputError.showAndWait();
+                    System.out.println(ex.getMessage());
+                }
+            }
+            else {
+                Alert inputError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                inputError.setTitle(sdStage.getTitle() + " - Ошибка");
+                inputError.setHeaderText("Ошибка при выключении");
+                inputError.setContentText("Введите \"выключить\" в поле ввода, чтобы выключить сервер");
+                inputError.showAndWait();
+            }
+        });
+        // Составление формы
+        sdBox.getChildren().add(tf);
+        sdBox.getChildren().add(ok);
+        sdStage.show();
+    }
+    // Кнопка перезагрузки
+    public void onRebootButtonPressed(ActionEvent event) {
 
+    }
+    // Кнопка резервного копирования
+    public void onBackupButtonPressed(ActionEvent event) {
+
+    }
 }

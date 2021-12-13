@@ -1,11 +1,7 @@
 package com.pharmacy.classes;
 
 import java.sql.*;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Iterator;
+import java.util.*;
 
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,16 +10,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import javax.xml.transform.Result;
+
 // Используется для подключения к БД для работы с кокретной таблицей
 public class MySQLDriver {
+    private List<String> columns = new ArrayList<String>();
     private ObservableList<ObservableList> data = FXCollections.observableArrayList();  // Структура для хранения таблицы
 
     private String connectionUrl;
@@ -76,6 +73,15 @@ public class MySQLDriver {
         this.password = password;
         this.tableName = tableName;
     }
+    public MySQLDriver(String connectionUrl, String user, String password) {
+        this.connectionUrl = connectionUrl;
+        this.user = user;
+        this.password = password;
+    }
+
+    public List<String> getColumnsNames() {
+        return columns;
+    }
 
     // Для выполнения сохранённых/подготовленных запросов
     public void executePreparedQueries() {
@@ -89,7 +95,7 @@ public class MySQLDriver {
             ResultSet rs = ps.executeQuery(); // можно думать, что это курсор - позволяет изменять данные бд на основе запроса ps
             // Пока есть запросы в очереди - обрабатываем
             while (!preparedQueries.isEmpty()) {
-                nextQuery = preparedQueries.poll();
+                nextQuery = preparedQueries.peek();
                 switch (nextQuery.type) {
                     case Update:
                         rs.absolute(nextQuery.row);
@@ -105,7 +111,6 @@ public class MySQLDriver {
                         for (Iterator<Map.Entry<String, Object>> i = nextQuery.values.entrySet().iterator(); i.hasNext();) {
                             Map.Entry<String, Object> e = i.next();
                             rs.updateObject(e.getKey(), e.getValue());
-                            i.remove();
                         }
                         rs.insertRow();
                         break;
@@ -114,11 +119,48 @@ public class MySQLDriver {
                         System.out.println("executePreparedQueries(): wrong queryTypes value");
                         break;
                 }
+                preparedQueries.remove();
             }
         }
         // Если появляется ошибка - заканчивается соединение с MySQL
         catch (Exception e) {
+            PreparedQuery failedQuery = preparedQueries.poll();
+            StringBuilder failedQueryInfo = new StringBuilder();
+            switch (failedQuery.type) {
+                case Update:
+                    failedQueryInfo.append("Запрос на изменение ");
+                    failedQueryInfo.append("поля: ");
+                    failedQueryInfo.append(this.getColumnAlias(failedQuery.field));
+                    failedQueryInfo.append(' ');
+                    failedQueryInfo.append(failedQuery.field);
+                    failedQueryInfo.append(" на строке номер ");
+                    failedQueryInfo.append(failedQuery.row);
+                    break;
+                case Delete:
+                    failedQueryInfo.append("Запрос на удаление строки номер ");
+                    failedQueryInfo.append(failedQuery.row);
+                    break;
+                case Insert:
+                    failedQueryInfo.append("Запрос на вставку новой строки со значениями:\n");
+                    for (Iterator<Map.Entry<String, Object>> i = failedQuery.values.entrySet().iterator(); i.hasNext();) {
+                        Map.Entry<String, Object> entry = i.next();
+                        failedQueryInfo.append(this.getColumnAlias(entry.getKey()));
+                        failedQueryInfo.append(' ');
+                        failedQueryInfo.append(entry.getKey());
+                        failedQueryInfo.append('=');
+                        failedQueryInfo.append(entry.getValue());
+                        failedQueryInfo.append('\n');
+                    }
+                    break;
+            }
             System.out.println(e.getMessage());
+            Alert executeError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+            executeError.setTitle(this.tableName + " - Ошибка");
+            executeError.setHeaderText("Ошибка при выполнении запроса в БД\n" +
+                    failedQueryInfo.toString() +
+                    "\nЧтобы сохранить остальные изменения снова нажмите Сохранить");
+            executeError.setContentText(e.getMessage());
+            executeError.showAndWait();
         }
     }
 
@@ -142,9 +184,74 @@ public class MySQLDriver {
         preparedQueries.add(new PreparedQuery(values));
     }
 
+    // Для возврата синонима названия столбца
+    public String getColumnAlias(String col_name) {
+        // TODO Заполнить для всех таблиц
+        switch (tableName) {
+            case "employees":
+                switch (col_name) {
+                    case "employee_id": return "Код Сотрудника";
+                    case "surname": return "Фамилия";
+                    case "name": return "Имя";
+                    case "middle_name": return "Отчество";
+                    case "phone_number": return "Номер телефона";
+                    case "position_id": return "Код Должности";
+                }
+            case "medicine":
+                switch (col_name) {
+                    case "medicine_id": return "Код Препарата";
+                    case "trade_name": return "Торговое Название";
+                    case "international_name": return "Международное Название";
+                    case "chemical_name": return "Химическое Название";
+                    case "atc_code": return "Код АТХ";
+                }
+        }
+        return col_name;
+    }
+
+    // Для получения статистики сервера
+    public ArrayList<String> getServerStatus(List<String> variables) {
+        ArrayList<String> values = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pharmacy", "root", "mikeqwer2246")) {
+            PreparedStatement ps;
+            ResultSet rs;
+            int col_index = 0;
+            for (String var_name : variables) {
+                if ("maxQueryTime".equals(var_name)) {
+                    ps = conn.prepareStatement("SELECT ROUND(MAX(sum_timer_wait)/1000000) FROM performance_schema.events_statements_summary_by_digest WHERE schema_name = \'pharmacy\'");
+                    col_index = 1;
+                }
+                else if ("avgQueryTime".equals(var_name)) {
+                    ps = conn.prepareStatement("SELECT ROUND((SUM(sum_timer_wait)/SUM(count_star))/1000000) FROM performance_schema.events_statements_summary_by_digest WHERE schema_name = \'pharmacy\'");
+                    col_index = 1;
+                }
+                else {
+                    ps = conn.prepareStatement("SHOW STATUS LIKE \'" + var_name + '\'');
+                    col_index = 2;
+                }
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    values.add(rs.getString(col_index));
+                }
+                else {
+                    values.add("error");
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return values;
+    }
+
+
     // Для заполнения TableView данными запроса
     // src: https://stackoverflow.com/questions/18941093/how-to-fill-up-a-tableview-with-database-data
-    public void buildData(TableView tv) {
+    public boolean buildData(TableView tv) {
+        if (tableName.isEmpty()) {
+            System.out.println("buildData(): no tableName given, unable to build data for TableView");
+            return false;
+        }
         final String query = "SELECT * FROM " + tableName;
 
         try (Connection conn = DriverManager.getConnection(this.connectionUrl, this.user, this.password); // Подключение к БД
@@ -155,7 +262,9 @@ public class MySQLDriver {
             for(int i=0 ; i<rs.getMetaData().getColumnCount(); i++){
                 //We are using non property style for making dynamic table
                 final int j = i;
-                TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i+1));
+                String col_name = rs.getMetaData().getColumnName(i+1);
+                columns.add(col_name);
+                TableColumn col = new TableColumn(this.getColumnAlias(col_name));
                 col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
                     public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
                         return new SimpleStringProperty(param.getValue().get(j).toString());
@@ -170,12 +279,11 @@ public class MySQLDriver {
                         int cell_col = cellEditEvent.getTablePosition().getColumn();
                         data.get(cell_row).set(cell_col, cellEditEvent.getNewValue());
                         // сохранение запроса
-                        preparedQueries.add(new PreparedQuery(cell_row+1, col.getText(), cellEditEvent.getNewValue()));
+                        preparedQueries.add(new PreparedQuery(cell_row+1, col_name, cellEditEvent.getNewValue()));
                     }
                 });
                 col.setCellFactory(TextFieldTableCell.forTableColumn());
                 tv.getColumns().addAll(col);
-                System.out.println("Column ["+i+"] ");
             }
             // Data added to ObservableList
             while(rs.next()){
@@ -185,13 +293,20 @@ public class MySQLDriver {
                     //Iterate Column
                     row.add(rs.getString(i));
                 }
-                System.out.println("Row [1] added "+row );
+                System.out.println("MySQLDriver.buildRow added: "+row );
                 data.add(row);
             }
             //FINALLY ADDED TO TableView
             tv.setItems(data);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            Alert connectionError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+            connectionError.setTitle(this.tableName + " - Ошибка");
+            connectionError.setHeaderText("Ошибка при получении таблицы");
+            connectionError.setContentText(e.getMessage());
+            connectionError.showAndWait();
+            return false;
         }
+        return true;
     }
 }
