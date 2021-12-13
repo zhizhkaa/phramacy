@@ -33,7 +33,7 @@ public class MySQLDriver {
     private Queue<PreparedQuery> preparedQueries = new LinkedList<PreparedQuery>();
 
     //  Типы запросов
-    enum queryTypes {Update, Delete, Insert};
+    enum queryTypes {Update, Delete, Insert, Select};
     //  Класс для запоминания изменений - для их последующего применения при сохранении
     // Тип запроса присваивается в зависимости от параметров при вызове конструктора
     private class PreparedQuery {
@@ -59,6 +59,12 @@ public class MySQLDriver {
         public PreparedQuery(HashMap<String, Object> values) {
             this.type = queryTypes.Insert;
             this.values = values;
+        }
+        // Select query
+        public PreparedQuery(int row, String field) {
+            this.type = queryTypes.Select;
+            this.row = row;
+            this.field = field;
         }
     }
 
@@ -103,6 +109,7 @@ public class MySQLDriver {
                         }
                         rs.insertRow();
                         break;
+
                     default:
                         System.out.println("executePreparedQueries(): wrong queryTypes value");
                         break;
@@ -121,6 +128,10 @@ public class MySQLDriver {
         data.remove(row_index);
         // сохранение запроса
         preparedQueries.add(new PreparedQuery(row_index+1));
+    }
+
+    // Запрос строки
+    public void selectRow(int row_index) {
     }
 
     // Для вставки новой строки

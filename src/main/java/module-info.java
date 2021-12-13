@@ -5,7 +5,6 @@ module com.example.pharmacy {
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires org.kordamp.ikonli.javafx;
-    requires android.json;
     requires java.sql;
     requires org.json;
 
