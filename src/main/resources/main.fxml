@@ -299,17 +299,17 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Button layoutX="16.0" layoutY="260.0" mnemonicParsing="false" text="Выключить сервер">
+            <Button layoutX="16.0" layoutY="260.0" mnemonicParsing="false" onAction="#onShutdownButtonPressed" text="Выключить сервер">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button layoutX="197.0" layoutY="259.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="114.0" text="Перезапустить">
+            <Button layoutX="197.0" layoutY="259.0" mnemonicParsing="false" onAction="#onRebootButtonPressed" prefHeight="30.0" prefWidth="114.0" text="Перезапустить">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button layoutX="320.0" layoutY="260.0" mnemonicParsing="false" text="Резервное копирование">
+            <Button layoutX="320.0" layoutY="260.0" mnemonicParsing="false" onAction="#onBackupButtonPressed" text="Резервное копирование">
                <font>
                   <Font size="14.0" />
                </font>

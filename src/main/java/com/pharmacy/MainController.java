@@ -4,6 +4,7 @@ import com.pharmacy.classes.User;
 import com.pharmacy.classes.MySQLDriver;
 
 import java.util.*;
+import java.io.File;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.json.JSONException;
@@ -365,4 +367,55 @@ public class MainController {
         @FXML private TextField avgQueryTime;
         @FXML private TextField openedTables;
         @FXML private TextField lastBackupDate;
+    // Кнопка выключения
+    public void onShutdownButtonPressed(ActionEvent event) {
+        // Создаём окно со вставкой
+        VBox sdBox = new VBox();
+        Stage sdStage = new Stage();
+        Scene sdScene = new Scene(sdBox, 400, 300);
+        sdStage.setTitle("Выключение сервера");
+        sdStage.initModality(Modality.WINDOW_MODAL);
+        sdStage.initOwner(sdBox.getScene().getWindow());
+        sdStage.setScene(sdScene);
+        // Текстовое поле подтверждения
+        TextField tf = new TextField();
+        tf.setPromptText("Напишите выключить, чтобы подтвердить");
+        // Кнопка ОК - отправка запроса
+        Button ok = new Button("ОК");
+        ok.setOnAction(e -> {
+            if ("выключить".equalsIgnoreCase(tf.getText())) {
+                try {
+                    Runtime.getRuntime().exec(new String[] {"cmd.exe", "/c", "sc", "stop", "MySQL80"});
+                    sdStage.close();
+                }
+                catch (Exception ex) {
+                    Alert inputError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                    inputError.setTitle(sdStage.getTitle() + " - Ошибка");
+                    inputError.setHeaderText("Ошибка при выключении:");
+                    inputError.setContentText(ex.getMessage());
+                    inputError.showAndWait();
+                    System.out.println(ex.getMessage());
+                }
+            }
+            else {
+                Alert inputError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                inputError.setTitle(sdStage.getTitle() + " - Ошибка");
+                inputError.setHeaderText("Ошибка при выключении");
+                inputError.setContentText("Введите \"выключить\" в поле ввода, чтобы выключить сервер");
+                inputError.showAndWait();
+            }
+        });
+        // Составление формы
+        sdBox.getChildren().add(tf);
+        sdBox.getChildren().add(ok);
+        sdStage.show();
+    }
+    // Кнопка перезагрузки
+    public void onRebootButtonPressed(ActionEvent event) {
+
+    }
+    // Кнопка резервного копирования
+    public void onBackupButtonPressed(ActionEvent event) {
+
+    }
 }
