@@ -1,1 +1,12 @@
-{"admin":{"password":"фвьшт","access":1,"id":9,"email":"xxxtonchxxx@gmail.com"}}
+{
+  "user" : {
+  "password": "user",
+  "id": 1,
+  "access": 0
+    },
+  "admin" : {
+    "password" : "admin",
+    "id" : 2,
+    "access" : 1
+  }
+}

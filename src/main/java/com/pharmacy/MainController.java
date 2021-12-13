@@ -1,37 +1,36 @@
 package com.pharmacy;
 
-import com.pharmacy.classes.User;
 import com.pharmacy.classes.MySQLDriver;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.sql.*;
-import java.util.*;
-import java.io.File;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.pharmacy.classes.User;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.controlsfx.control.action.Action;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.json.JSONException;
-import org.w3c.dom.Text;
-
 import org.json.JSONObject;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
-import java.util.Iterator;
-import java.util.Optional;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.sql.*;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -548,9 +547,49 @@ public class MainController {
             });
         }
     }
+
     @FXML private Pane reports;
         @FXML private ChoiceBox cbReports;
         @FXML private TableView tvReports;
+
+    public void onSaveButtonPressed () throws IOException {
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet spreadsheet = workbook.createSheet("sample");
+
+        Row row = spreadsheet.createRow(0);
+
+
+        for (int j = 0; j < tvReports.getColumns().size(); j++) {
+            TableColumn currentName = (TableColumn) tvReports.getColumns().get(j);
+            row.createCell(j).setCellValue(currentName.getText());
+        }
+
+        for (int i = 0; i < tvReports.getItems().size(); i++) {
+            row = spreadsheet.createRow(i + 1);
+            ObservableList<String> currentRow = (ObservableList<String>) tvReports.getItems().get(i);
+            for (int j = 0; j < currentRow.size(); j++) {
+                row.createCell(j).setCellValue(currentRow.get(j));
+            }
+        }
+
+        FileOutputStream fileOut = null;
+        try {
+            FileChooser chooser = new FileChooser();
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XLS files (*.xls)", "*.xls");
+            chooser.getExtensionFilters().add(extFilter);
+            File file = chooser.showSaveDialog(reports.getScene().getWindow());
+
+            if (file != null) {
+                fileOut = new FileOutputStream(file);
+                workbook.write(fileOut);
+                fileOut.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 
 
