@@ -438,7 +438,7 @@ public class MainController {
 
     public void updateChoiceBox(ChoiceBox box) throws JSONException {
         // Заполнение ChoiceBox с пользователями
-        if (!box.getItems().equals(null)) { box.getItems().clear(); } // TODO вот на эту строку ругается
+        if (!box.getItems().equals(null)) { box.getItems().clear(); } // Ругается на строку, но что уж поделать
         JSONObject object = User.readJSON();
         Iterator<String> logins = object.keys();
 
@@ -458,21 +458,14 @@ public class MainController {
         @FXML private TextField newUserPhone;
         @FXML private ToggleGroup newUserAccess;
 
-        // Поля Login, Access заносятся в json
-        // Поля FIO, Position заносятся в БД
-
     // Нажатие кноки "Создать аккаунт"
     public void onCreateNewUserPressed() throws JSONException, SQLException {
-        //TODO Нужна проверить существует ли еще пользователь с таким именем
-        //  Нужно проверить заполнены ли все поля , если не заполнены .setPromptTex("не ввели логин")
-        //  Если что-то еще обнаружиться то и они нужны
         String login = newUserLogin.getText();
         String password = User.generatePassword();
         String[] FIO = newUserFIO.getText().split(" ");
         String phone = newUserPhone.getText();
         int intAccess;
         int position;
-
         RadioButton selectedRadioButton = (RadioButton) newUserAccess.getSelectedToggle();
         String access = selectedRadioButton.getText();
         if (access.equals("пользователь")) {
@@ -483,40 +476,59 @@ public class MainController {
             intAccess = 1;
             position = 11;
         }
-
-        String surname = FIO[0];
-        String name = FIO[1];
-        String middle = FIO[2];
-
-        String query = "insert into employees (surname, name, middle_name, phone_number, position_id)"
-                + " values ('" + surname + "', '" + name + "', '" + middle + "', '" + phone + "', '" + position + "');";
-        System.out.println(query);
-
-        Connection conn = DriverManager.getConnection(mysql_url, mysql_user, mysql_pass) ;
-        PreparedStatement preparedStatement = conn.prepareStatement(query);
-        preparedStatement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-
-        ResultSet rs = preparedStatement.getGeneratedKeys();
-        rs.next();
-        int id = rs.getInt(1);
-
-        conn.close();
-
         JSONObject object = User.readJSON();
-        JSONObject userObject = new JSONObject();
-        userObject.put("password", password);
-        userObject.put("access", intAccess);
-        userObject.put("id", id);
-        object.put(login, userObject);
 
-        User.updateJSON(object);
+        if (newUserLogin.getText().trim().isEmpty()) {
+            newUserLogin.setPromptText("Вы не ввели логин");
+        }
+        else if (newUserFIO.getText().trim().isEmpty()) {
+            newUserFIO.setPromptText("Вы не ввели ФИО");
+        }
+        else if (newUserPhone.getText().trim().isEmpty()) {
+            newUserPhone.setPromptText("Не заполнено");
+        }
+        else if (!newUserLogin.getText().trim().isEmpty() && !newUserFIO.getText().trim().isEmpty() && !newUserPhone.getText().trim().isEmpty()) {
+            if (object.has(login)) {
+                newUserLogin.clear();
+                newUserLogin.setPromptText("Пользователь с таким логином уже существует");
+            }
+            else {
+                // Заполнение базы
+                String surname = FIO[0];
+                String name = FIO[1];
+                String middle = FIO[2];
 
-        updateChoiceBox(userLogins);
-        Alert newUserAlert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK);
-        newUserAlert.setTitle("Новый пользователь");
-        newUserAlert.setHeaderText("Создан новый пользователь");
-        newUserAlert.setContentText("Логин: " + login + "\nПароль: " + password + "\nДоступ: " + access);
-        newUserAlert.show();
+                String query = "insert into employees (surname, name, middle_name, phone_number, position_id)"
+                        + " values ('" + surname + "', '" + name + "', '" + middle + "', '" + phone + "', '" + position + "');";
+                System.out.println(query);
+
+                Connection conn = DriverManager.getConnection(mysql_url, mysql_user, mysql_pass) ;
+                PreparedStatement preparedStatement = conn.prepareStatement(query);
+                preparedStatement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+
+                ResultSet rs = preparedStatement.getGeneratedKeys();
+                rs.next();
+                int id = rs.getInt(1);
+
+                conn.close();
+                // Изменения в JSON'e
+
+                JSONObject userObject = new JSONObject();
+                userObject.put("password", password);
+                userObject.put("access", intAccess);
+                userObject.put("id", id);
+                object.put(login, userObject);
+
+                User.updateJSON(object);
+
+                updateChoiceBox(userLogins);
+                Alert newUserAlert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK);
+                newUserAlert.setTitle("Новый пользователь");
+                newUserAlert.setHeaderText("Создан новый пользователь");
+                newUserAlert.setContentText("Логин: " + login + "\nПароль: " + password + "\nДоступ: " + access);
+                newUserAlert.show();
+            }
+        }
     }
 
         @FXML private ChoiceBox<String> userLogins;
@@ -524,35 +536,43 @@ public class MainController {
         @FXML private TextField chosenUserAccess;
 
     // Нажатие кнопки "Удалить аккаунт"
-    //TODO Здесь нужна проверка на то что ты сам себя не удалишь
     public void onDeleteUserButtonPressed() throws JSONException, SQLException {
         String login = userLogins.getSelectionModel().getSelectedItem();
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Подтверждение удаления аккаунта");
-        alert.setHeaderText("Вы уверены что хотите удалить аккаунт " + login + "?");
-        alert.setContentText("Нажмите ОК для подтверждения");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            JSONObject object = User.readJSON();
-            JSONObject user = object.getJSONObject(login);
-            int userId = user.getInt("id");
-
-            // Удаляем из бд
-            String query = "DELETE from employees where employee_id=" + userId + ";";
-            Connection conn = DriverManager.getConnection(mysql_url, mysql_user, mysql_pass) ;
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.execute(query);
-            conn.close();
-
-            // Удаляем из JSON
-            object.remove(login);
-            User.updateJSON(object);
-
-            // TODO добавить окошечко о том что пользователь удалён
+        if (login.equals(user.getLogin())) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText("Вы не можете удалить свой аккаунт");
+            alert.setContentText(null);
+            alert.show();
         }
+        else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Подтверждение удаления аккаунта");
+            alert.setHeaderText("Вы уверены что хотите удалить аккаунт " + login + "?");
+            alert.setContentText("Нажмите ОК для подтверждения");
 
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                JSONObject object = User.readJSON();
+                JSONObject user = object.getJSONObject(login);
+                int userId = user.getInt("id");
+
+                // Удаляем из бд
+                String query = "DELETE from employees where employee_id=" + userId + ";";
+                Connection conn = DriverManager.getConnection(mysql_url, mysql_user, mysql_pass);
+                PreparedStatement preparedStatement = conn.prepareStatement(query);
+                preparedStatement.execute(query);
+                conn.close();
+                // Удаляем из JSON
+                object.remove(login);
+                User.updateJSON(object);
+                Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
+                alert1.setTitle("Удаление пользователя");
+                alert1.setHeaderText("Вы удалили пользователя: " + login);
+                alert.setContentText(null);
+                alert.show();
+            }
+        }
     }
 
     // Статистика сервера

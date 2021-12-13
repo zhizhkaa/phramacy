@@ -27,22 +27,22 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Button alignment="CENTER" layoutX="-3.0" layoutY="192.0" mnemonicParsing="false" onAction="#onTablesButtonPressed" prefHeight="48.0" prefWidth="213.0" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe; -fx-border-radius: 0px;" stylesheets="@style.css" text="Работа с данными" textAlignment="CENTER">
+      <Button alignment="CENTER" layoutX="-3.0" layoutY="192.0" mnemonicParsing="false" onAction="#onTablesButtonPressed" prefHeight="48.0" prefWidth="213.0" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe; -fx-border-color: #dfeaf5;" stylesheets="@style.css" text="Работа с данными" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button fx:id="accountsButton" alignment="CENTER" contentDisplay="CENTER" layoutX="-3.0" layoutY="240.0" mnemonicParsing="false" onAction="#onAccAButtonPressed" prefHeight="48.0" prefWidth="214.0" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe; -fx-border-radius: 0px;" stylesheets="@style.css" text="Работа с аккаунтами" textAlignment="CENTER" wrapText="true">
+      <Button fx:id="accountsButton" alignment="CENTER" contentDisplay="CENTER" layoutX="-4.0" layoutY="288.0" mnemonicParsing="false" onAction="#onAccAButtonPressed" prefHeight="48.0" prefWidth="214.0" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe; -fx-border-color: #dfeaf5;" stylesheets="@style.css" text="Работа с аккаунтами" textAlignment="CENTER" wrapText="true">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button alignment="CENTER" layoutX="-3.0" layoutY="288.0" mnemonicParsing="false" onAction="#onReportsButtonPressed" prefHeight="48.0" prefWidth="214.0" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe; -fx-border-radius: 0px;" styleClass="g" stylesheets="@style.css" text="Работа с отчётами" textAlignment="CENTER">
+      <Button alignment="CENTER" layoutX="-4.0" layoutY="240.0" mnemonicParsing="false" onAction="#onReportsButtonPressed" prefHeight="48.0" prefWidth="214.0" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe; -fx-border-color: #dfeaf5;" styleClass="g" stylesheets="@style.css" text="Работа с отчётами" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button id="button" fx:id="statsButton" alignment="CENTER" layoutX="-3.0" layoutY="336.0" mnemonicParsing="false" onAction="#onStatsAButtonPressed" prefHeight="48.0" prefWidth="214.0" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe; -fx-border-radius: 0px;" stylesheets="@style.css" text="Статистика сервера" textAlignment="CENTER">
+      <Button id="button" fx:id="statsButton" alignment="CENTER" layoutX="-4.0" layoutY="336.0" mnemonicParsing="false" onAction="#onStatsAButtonPressed" prefHeight="48.0" prefWidth="214.0" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe; -fx-border-color: #dfeaf5;" stylesheets="@style.css" text="Статистика сервера" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -54,7 +54,7 @@
       </Label>
    </AnchorPane>
    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="599.0" prefWidth="334.0" stylesheets="@style.css">
-      <Pane fx:id="accountSettings" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #e8f3ff;" stylesheets="@style.css">
+      <Pane fx:id="accountSettings" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #e8f3ff;" stylesheets="@style.css" visible="false">
          <AnchorPane layoutX="21.0" layoutY="26.0" prefHeight="136.0" prefWidth="559.0" stylesheets="@style.css">
             <Label layoutX="40.0" layoutY="58.0" stylesheets="@style.css" text="Имя пользователя:">
                <font>
@@ -146,7 +146,7 @@
             </font></Button>
          <TableView fx:id="tvTest" editable="true" layoutX="36.0" layoutY="210.0" prefHeight="300.0" prefWidth="514.0" style="-fx-background-color: #fefefe; -fx-border-color: #3e6cbd;" stylesheets="@style.css" tableMenuButtonVisible="true" />
       </Pane>
-      <Pane fx:id="reports" layoutX="-1.0" prefHeight="600.0" prefWidth="586.0" stylesheets="@style.css" visible="false">
+      <Pane fx:id="reports" layoutX="-1.0" prefHeight="600.0" prefWidth="586.0" style="-fx-background-color: #dfeaf5;" stylesheets="@style.css">
          <Label layoutX="71.0" layoutY="36.0" stylesheets="@style.css" text="Форма:">
             <font>
                <Font size="14.0" />
@@ -163,14 +163,14 @@
                <Font size="14.0" />
             </font>
          </Label>
-         <Button layoutX="331.0" layoutY="542.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="86.0" stylesheets="@style.css" text="Печать">
+         <Button layoutX="331.0" layoutY="542.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="86.0" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe;" stylesheets="@style.css" text="Печать">
             <font>
-               <Font size="14.0" />
+               <Font name="System Bold" size="14.0" />
             </font>
          </Button>
-         <Button layoutX="433.0" layoutY="542.0" mnemonicParsing="false" stylesheets="@style.css" text="Сохранить как">
+         <Button layoutX="433.0" layoutY="542.0" mnemonicParsing="false" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe;" stylesheets="@style.css" text="Сохранить как">
             <font>
-               <Font size="14.0" />
+               <Font name="System Bold" size="14.0" />
             </font>
          </Button>
          <TextArea layoutX="31.0" layoutY="150.0" prefHeight="378.0" prefWidth="514.0" stylesheets="@style.css" />
@@ -187,7 +187,7 @@
             </font>
          </Label>
       </Pane>
-      <Pane fx:id="accountsAdmin" prefHeight="599.0" prefWidth="586.0" style="-fx-background-color: #e8f3ff;" stylesheets="@style.css" visible="false">
+      <Pane fx:id="accountsAdmin" prefHeight="599.0" prefWidth="586.0" style="-fx-background-color: #dfeaf5;" stylesheets="@style.css" visible="false">
          <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="559.0" stylesheets="@style.css">
             <Label layoutX="14.0" layoutY="14.0" stylesheets="@style.css" text="Создание аккаунта">
                <font>
