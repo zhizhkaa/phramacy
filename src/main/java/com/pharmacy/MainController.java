@@ -3,6 +3,7 @@ package com.pharmacy;
 import com.pharmacy.classes.User;
 import com.pharmacy.classes.MySQLDriver;
 
+import java.sql.*;
 import java.util.*;
 
 import javafx.collections.FXCollections;
@@ -163,7 +164,6 @@ public class MainController {
     @FXML private TextField emailField;
 
     // Нажатие кнопки "Привязать email
-    // TODO можно добавить поле с email'oм, хотя это и не важно
     public void onAddEmailButtonPressed() throws JSONException {
         String s = emailField.getText();
         if (s.isEmpty()) { emailField.setPromptText("Вы не ввели e-mail"); }
@@ -261,8 +261,8 @@ public class MainController {
     // Для связи с сервером БД
     // TODO Придумать для url, root, password ввод
     String mysql_url = "jdbc:mysql://localhost:3306/pharmacy";
-    String mysql_user = "root";
-    String mysql_pass = "mikeqwer2246";
+    String mysql_user = "root"; // TODO можно запросить в начале программы и сохранить в Jsone
+    String mysql_pass = "password";
 
     // Для вывода таблиц в текущем окне
     public void onDisplayTableButtonPressed(ActionEvent event) {
@@ -391,6 +391,7 @@ public class MainController {
     }
     @FXML private Pane reports;
 
+
     // Работа с аккаунтами
     public void onAccAButtonPressed() throws JSONException {
         accountSettings.setVisible(false);
@@ -406,9 +407,27 @@ public class MainController {
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
                 try {
                     int intAccess = User.readJSON().getJSONObject(t1).getInt("access");
-                    if (intAccess == 0) { chosenUserAccess.setText("Пользователь"); }
-                    else {  chosenUserAccess.setText("Администратор"); }
+                    if (intAccess == 0) {
+                        chosenUserAccess.setText("Пользователь");
+                    }
+                    else {
+                        chosenUserAccess.setText("Администратор");
+                    }
+
+                    Connection conn = DriverManager.getConnection(mysql_url, mysql_user, mysql_pass) ;
+                    Statement stmt = conn.createStatement();
+                    String query = "select surname, name, middle_name from employees where employee_id=" + User.readJSON().getJSONObject(t1).getInt("id") + ";";
+                    ResultSet rs = stmt.executeQuery(query);
+                    while (rs.next()) {
+                        String surname = rs.getString("surname");
+                        String name = rs.getString("name");
+                        String middle_name = rs.getString("middle_name");
+                        userFIO.setText(surname + " " + name + " " + middle_name);
+                    }
+
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -433,33 +452,59 @@ public class MainController {
 
     // Создание аккаунта
         @FXML private TextField newUserLogin;
-        //@FXML private TextField newUserFIO;         // TODO из этого поля надо будет делать внос в базу данных,
-                                                    // TODO так же надо добавить другие поля необходимые для базы
-        //@FXML private ChoiceBox newUserPosition;    // TODO этот ChoiceBox Надо заполнять значениями из таблицы "Должности"
+        @FXML private TextField newUserFIO;
+        @FXML private TextField newUserPhone;
         @FXML private ToggleGroup newUserAccess;
 
         // Поля Login, Access заносятся в json
         // Поля FIO, Position заносятся в БД
 
     // Нажатие кноки "Создать аккаунт"
-    public void onCreateNewUserPressed() throws JSONException {
+    public void onCreateNewUserPressed() throws JSONException, SQLException {
         //TODO Нужна проверить существует ли еще пользователь с таким именем
         //  Нужно проверить заполнены ли все поля , если не заполнены .setPromptTex("не ввели логин")
         //  Если что-то еще обнаружиться то и они нужны
         String login = newUserLogin.getText();
         String password = User.generatePassword();
+        String[] FIO = newUserFIO.getText().split(" ");
+        String phone = newUserPhone.getText();
         int intAccess;
+        int position;
 
         RadioButton selectedRadioButton = (RadioButton) newUserAccess.getSelectedToggle();
         String access = selectedRadioButton.getText();
-        if (access.equals("пользователь")) { intAccess = 0; }
-        else { intAccess = 1; }
+        if (access.equals("пользователь")) {
+            intAccess = 0;
+            position = 10;
+        }
+        else {
+            intAccess = 1;
+            position = 11;
+        }
+
+        String surname = FIO[0];
+        String name = FIO[1];
+        String middle = FIO[2];
+
+        String query = "insert into employees (surname, name, middle_name, phone_number, position_id)"
+                + " values ('" + surname + "', '" + name + "', '" + middle + "', '" + phone + "', '" + position + "');";
+        System.out.println(query);
+
+        Connection conn = DriverManager.getConnection(mysql_url, mysql_user, mysql_pass) ;
+        PreparedStatement preparedStatement = conn.prepareStatement(query);
+        preparedStatement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+
+        ResultSet rs = preparedStatement.getGeneratedKeys();
+        rs.next();
+        int id = rs.getInt(1);
+
+        conn.close();
 
         JSONObject object = User.readJSON();
         JSONObject userObject = new JSONObject();
         userObject.put("password", password);
         userObject.put("access", intAccess);
-        // userObject.put("id", id);    TODO этот id надо получить из таблицы сотрудники
+        userObject.put("id", id);
         object.put(login, userObject);
 
         User.updateJSON(object);
@@ -472,14 +517,13 @@ public class MainController {
         newUserAlert.show();
     }
 
-    // TODO Удаление аккаунта
-
         @FXML private ChoiceBox<String> userLogins;
+        @FXML private TextField userFIO;
         @FXML private TextField chosenUserAccess;
 
     // Нажатие кнопки "Удалить аккаунт"
-    //TODO Здесь нужна проверка на то что ты сам себя не удалишьы
-    public void onDeleteUserButtonPressed() throws JSONException {
+    //TODO Здесь нужна проверка на то что ты сам себя не удалишь
+    public void onDeleteUserButtonPressed() throws JSONException, SQLException {
         String login = userLogins.getSelectionModel().getSelectedItem();
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -490,8 +534,18 @@ public class MainController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             JSONObject object = User.readJSON();
-            object.remove(login);
+            JSONObject user = object.getJSONObject(login);
+            int userId = user.getInt("id");
 
+            // Удаляем из бд
+            String query = "DELETE from employees where employee_id=" + userId + ";";
+            Connection conn = DriverManager.getConnection(mysql_url, mysql_user, mysql_pass) ;
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.execute(query);
+            conn.close();
+
+            // Удаляем из JSON
+            object.remove(login);
             User.updateJSON(object);
 
             // TODO добавить окошечко о том что пользователь удалён
