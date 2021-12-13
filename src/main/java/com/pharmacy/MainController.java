@@ -267,7 +267,7 @@ public class MainController {
     // TODO Придумать для url, root, password ввод
     String mysql_url = "jdbc:mysql://localhost:3306/pharmacy";
     String mysql_user = "root"; // TODO можно запросить в начале программы и сохранить в Jsone
-    String mysql_pass = "mikeqwer2246";
+    String mysql_pass = "password";
 
     // Для вывода таблиц в текущем окне
     public void onDisplayTableButtonPressed(ActionEvent event) {
@@ -502,6 +502,8 @@ public class MainController {
     @FXML private Pane reports;
         @FXML private ChoiceBox cbReports;
         @FXML private TableView tvReports;
+
+
 
 
     // Работа с аккаунтами

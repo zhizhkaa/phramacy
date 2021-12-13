@@ -1,12 +1,7 @@
 package com.pharmacy.classes;
 
 import java.sql.*;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Iterator;
+import java.util.*;
 
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
@@ -83,6 +78,23 @@ public class MySQLDriver {
         this.user = user;
         this.password = password;
     }
+
+    // Для получения значений конкретного столбца
+    public ArrayList<String> getColumn(String tableName, String col_name) {
+        ArrayList<String> values = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection(this.connectionUrl, this.user, this.password)) {
+            PreparedStatement ps = conn.prepareStatement("SELECT " + col_name + " FROM " + tableName);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                values.add(rs.getString(1));
+            }
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return values;
+    }
+
 
     public List<String> getColumnsNames() {
         return columns;
@@ -252,11 +264,7 @@ public class MySQLDriver {
 
     // Для заполнения TableView данными запроса
     // src: https://stackoverflow.com/questions/18941093/how-to-fill-up-a-tableview-with-database-data
-    public boolean buildData(TableView tv, String query) {
-        if (tableName.isEmpty()) {
-            System.out.println("buildData(): no tableName given, unable to build data for TableView");
-            return false;
-        }
+    public void buildData(TableView tv, String query) {
         if ("default_select".equals(query)) {
             query = "SELECT * FROM " + tableName;
         }
@@ -269,9 +277,7 @@ public class MySQLDriver {
             for(int i=0 ; i<rs.getMetaData().getColumnCount(); i++){
                 //We are using non property style for making dynamic table
                 final int j = i;
-                String col_name = rs.getMetaData().getColumnName(i+1);
-                columns.add(col_name);
-                TableColumn col = new TableColumn(this.getColumnAlias(col_name));
+                TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i+1));
                 col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
                     public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
                         return new SimpleStringProperty(param.getValue().get(j).toString());
@@ -286,11 +292,12 @@ public class MySQLDriver {
                         int cell_col = cellEditEvent.getTablePosition().getColumn();
                         data.get(cell_row).set(cell_col, cellEditEvent.getNewValue());
                         // сохранение запроса
-                        preparedQueries.add(new PreparedQuery(cell_row+1, col_name, cellEditEvent.getNewValue()));
+                        preparedQueries.add(new PreparedQuery(cell_row+1, col.getText(), cellEditEvent.getNewValue()));
                     }
                 });
                 col.setCellFactory(TextFieldTableCell.forTableColumn());
                 tv.getColumns().addAll(col);
+                System.out.println("Column ["+i+"] ");
             }
             // Data added to ObservableList
             while(rs.next()){
@@ -300,20 +307,13 @@ public class MySQLDriver {
                     //Iterate Column
                     row.add(rs.getString(i));
                 }
-                System.out.println("MySQLDriver.buildRow added: "+row );
+                System.out.println("Row [1] added "+row );
                 data.add(row);
             }
             //FINALLY ADDED TO TableView
             tv.setItems(data);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            Alert connectionError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
-            connectionError.setTitle(this.tableName + " - Ошибка");
-            connectionError.setHeaderText("Ошибка при получении таблицы");
-            connectionError.setContentText(e.getMessage());
-            connectionError.showAndWait();
-            return false;
         }
-        return true;
     }
 }
