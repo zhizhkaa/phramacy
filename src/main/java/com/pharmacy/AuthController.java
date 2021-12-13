@@ -115,16 +115,15 @@ public class AuthController {
             try {
                 User user = new User(login, password);
 
-                if ((user.getLogin().equals(login)) && (user.getPassword().equals(password))) {
+                if ((password.equals(user.getPassword()))) {
                     Stage stage = (Stage) authPane.getScene().getWindow();
                     PharmacyApplication.showMain(user, stage);
                 } else {
-                    notification.setText("Неправильный логин или пароль");
+                    notification.setText("Неправильный логин/пароль");
                 }
             } catch (JSONException e) {
                 notification.setText("Нет такого пользователя");
             }
-
         }
     }
 

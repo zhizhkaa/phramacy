@@ -24,6 +24,6 @@
             <Font size="11.0" />
          </font>
       </Button>
-      <Label fx:id="notification" alignment="TOP_LEFT" layoutX="49.0" layoutY="110.0" prefHeight="18.0" prefWidth="151.0" textFill="RED" />
+      <Label fx:id="notification" alignment="TOP_LEFT" layoutX="49.0" layoutY="110.0" prefHeight="34.0" prefWidth="151.0" textFill="RED" wrapText="true" />
    </AnchorPane>
 </VBox>

@@ -645,7 +645,10 @@ public class MainController {
         ok.setOnAction(e -> {
             if ("выключить".equalsIgnoreCase(tf.getText())) {
                 try {
-                    Runtime.getRuntime().exec(new String[] {"cmd.exe", "/c", "sc", "stop", "MySQL80"});
+                    //Runtime.getRuntime().exec(new String[] {"cmd.exe", "/c", "sc", "stop", "MySQL80"});
+                    //sdStage.close();
+                    Process process = Runtime.getRuntime().exec("runas /profile /user:Administrator \"cmd.exenet stop mysql80\"");
+                    System.out.println("Остановили");
                     sdStage.close();
                 }
                 catch (Exception ex) {

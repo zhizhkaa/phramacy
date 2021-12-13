@@ -37,9 +37,9 @@ public class User {
         System.out.println(user.getString("access"));
     }
 
-    public JSONObject getUserJSON() {return userJSON;}
     public String getLogin() { return login; }
-    public String getPassword() { return password; }
+
+    public String getPassword() { return readJSON().getJSONObject(login).getString("password"); }
     public int getAccess() throws JSONException {
         System.out.println("access" + readJSON().getJSONObject(login).getInt("access"));
         return readJSON().getJSONObject(login).getInt("access");
