@@ -24,6 +24,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.controlsfx.control.action.Action;
 import org.json.JSONException;
 import org.w3c.dom.Text;
 
@@ -266,8 +267,46 @@ public class MainController {
     // Для связи с сервером БД
     // TODO Придумать для url, root, password ввод
     String mysql_url = "jdbc:mysql://localhost:3306/pharmacy";
-    String mysql_user = "root"; // TODO можно запросить в начале программы и сохранить в Jsone
+    String mysql_user = "root"; // TODO можно запросить в начале программы и сохранить в Jsone пока что через настройки
     String mysql_pass = "password";
+
+    public void onMySQLAccessConfigButtonPressed(ActionEvent event) {
+        VBox layout = new VBox();
+        Scene scene = new Scene(layout, 300, 200);
+        Stage stage = new Stage();
+        stage.setTitle("Параметры входа MySQL");
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(tables.getScene().getWindow());
+        stage.setScene(scene);
+        Label lb = new Label("Введите имя пользователя и пароль MySQL:");
+        TextField tfUser = new TextField(mysql_user);
+        TextField tfPass = new TextField();
+        tfUser.setPromptText("Имя пользователя");
+        tfPass.setPromptText("Пароль");
+        Button save = new Button("Сохранить");
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (tfUser.getText().isEmpty() || tfPass.getText().isEmpty()) {
+                    Alert inputError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                    inputError.setTitle(stage.getTitle() + " - Ошибка");
+                    inputError.setHeaderText("Ошибка при заполнении");
+                    inputError.setContentText("Вы не заполнили все поля");
+                    inputError.showAndWait();
+                }
+                else {
+                    mysql_user = tfUser.getText();
+                    mysql_pass = tfPass.getText();
+                    stage.close();
+                }
+            }
+        });
+        layout.getChildren().add(lb);
+        layout.getChildren().add(tfUser);
+        layout.getChildren().add(tfPass);
+        layout.getChildren().add(save);
+        stage.show();
+    }
 
     // Для вывода таблиц в текущем окне
     public void onDisplayTableButtonPressed(ActionEvent event) {
