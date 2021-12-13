@@ -3,6 +3,7 @@ package com.pharmacy.classes;
 import java.sql.*;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Iterator;
@@ -76,6 +77,11 @@ public class MySQLDriver {
         this.password = password;
         this.tableName = tableName;
     }
+    public MySQLDriver(String connectionUrl, String user, String password) {
+        this.connectionUrl = connectionUrl;
+        this.user = user;
+        this.password = password;
+    }
 
     // Для выполнения сохранённых/подготовленных запросов
     public void executePreparedQueries() {
@@ -142,10 +148,28 @@ public class MySQLDriver {
         preparedQueries.add(new PreparedQuery(values));
     }
 
+    // Для получения значений конкретного столбца
+    public ArrayList<String> getColumn(String tableName, String col_name) {
+        ArrayList<String> values = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection(this.connectionUrl, this.user, this.password)) {
+            PreparedStatement ps = conn.prepareStatement("SELECT " + col_name + " FROM " + tableName);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                values.add(rs.getString(1));
+            }
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return values;
+    }
+
     // Для заполнения TableView данными запроса
     // src: https://stackoverflow.com/questions/18941093/how-to-fill-up-a-tableview-with-database-data
-    public void buildData(TableView tv) {
-        final String query = "SELECT * FROM " + tableName;
+    public void buildData(TableView tv, String query) {
+        if ("default_select".equals(query)) {
+            query = "SELECT * FROM " + tableName;
+        }
 
         try (Connection conn = DriverManager.getConnection(this.connectionUrl, this.user, this.password); // Подключение к БД
              PreparedStatement ps = conn.prepareStatement(query);
