@@ -237,7 +237,7 @@ public class MySQLDriver {
     // Для получения статистики сервера
     public ArrayList<String> getServerStatus(List<String> variables) {
         ArrayList<String> values = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pharmacy", "root", "mikeqwer2246")) {
+        try (Connection conn = DriverManager.getConnection(this.connectionUrl, this.user, this.password)) {
             PreparedStatement ps;
             ResultSet rs;
             int col_index = 0;
