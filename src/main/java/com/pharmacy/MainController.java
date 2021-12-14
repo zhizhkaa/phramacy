@@ -121,7 +121,14 @@ public class MainController {
             else if (newPasswordShown.isVisible()) { newPassword = newPasswordShown.getText().trim(); }
 
             //noinspection ConstantConditions
-            if (oldPassword.equals(newPassword) && (!(oldPassword.isEmpty()) || !(newPassword.isEmpty()))) { System.out.println("Старый и новый пароли совпадают"); }
+            if (oldPassword.equals(newPassword) && (!(oldPassword.isEmpty()) || !(newPassword.isEmpty()))) {
+                System.out.println("onChangePasswordPressed(): Старый и новый пароли совпадают");
+                Alert info = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                info.setTitle("Ошибка при смене пароля");
+                info.setHeaderText(null);
+                info.setContentText("Старый и новый пароли совпадают");
+                info.showAndWait();
+            }
             else { // Если не работает добавь if (!(oldPassword.equals(newPassword) && (!(oldPassword.isEmpty()) || !(newPassword.isEmpty()))))
                 String passwordJSON = user.getPassword();
                 if (oldPassword.equals(passwordJSON)) {
