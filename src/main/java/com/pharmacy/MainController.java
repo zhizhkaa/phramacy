@@ -953,10 +953,12 @@ public class MainController {
         chooser.getExtensionFilters().add(extFilter);
         File file = chooser.showSaveDialog(reports.getScene().getWindow()); // Это куда сохранять
 
-        ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "\"" + mysql_bin + "\\bin\\mysqldump\" -u" + mysql_user + " -p" + mysql_pass + " " + dbName);
+        ProcessBuilder builder = new ProcessBuilder();
+        builder.redirectErrorStream(false);
 
+        builder.command("cmd.exe", "/c", "\"" + mysql_bin + "\\bin\\mysqldump\" -u" + mysql_user + " -p" + mysql_pass + " " + dbName);
         builder.redirectOutput(file); // Сюда сохраняем
-        builder.redirectErrorStream(true);
+
         Process p = builder.start();
         p.waitFor();
         System.out.print("DOne");
