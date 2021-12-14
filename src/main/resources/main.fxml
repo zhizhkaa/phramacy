@@ -131,7 +131,7 @@
             <TextField fx:id="emailField" layoutX="40.0" layoutY="57.0" prefHeight="26.0" prefWidth="250.0" promptText="E-mail" stylesheets="@style.css" />
          </AnchorPane>
       </Pane>
-      <Pane fx:id="tables" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #e8f3ff;" stylesheets="@style.css" visible="false">
+      <Pane fx:id="tables" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #e8f3ff;" stylesheets="@style.css">
          <Label layoutX="36.0" layoutY="31.0" stylesheets="@style.css" text="Таблица: ">
             <font>
                <Font size="14.0" />
@@ -153,14 +153,14 @@
                <Font name="System Bold" size="12.0" />
             </font>
          </Button>
-         <Button layoutX="456.0" layoutY="29.0" mnemonicParsing="false" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe;" stylesheets="@style.css" text="Закрыть">
+         <Button fx:id="closeButton" layoutX="456.0" layoutY="29.0" mnemonicParsing="false" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe;" stylesheets="@style.css" text="Закрыть">
             <font>
                <Font name="System Bold" size="12.0" />
             </font>
          </Button>
          <TableView fx:id="tvTest" editable="true" layoutX="36.0" layoutY="210.0" prefHeight="300.0" prefWidth="514.0" style="-fx-background-color: #fefefe; -fx-border-color: #3e6cbd;" stylesheets="@style.css" tableMenuButtonVisible="true" />
       </Pane>
-      <Pane fx:id="reports" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #e8f3ff;" stylesheets="@style.css">
+      <Pane fx:id="reports" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #e8f3ff;" stylesheets="@style.css" visible="false">
          <Label layoutX="71.0" layoutY="36.0" stylesheets="@style.css" text="Форма:">
             <font>
                <Font size="14.0" />

@@ -262,6 +262,7 @@ public class MainController {
         @FXML private TableView<String> tvTest;
         @FXML private ChoiceBox tableChoice;
         @FXML private Button saveAllButton;
+        @FXML private Button closeButton;
 
     // Для связи с сервером БД
     // TODO Придумать для url, root, password ввод
@@ -321,7 +322,8 @@ public class MainController {
     public void onDisplayTableButtonPressed(ActionEvent event) {
         /* TODO Вывод окна с подтверждением на смену таблицы без сохранения
             ИЛИ (сложнее) сделать, чтобы появлялся новый элемент TableView */
-        String tableName = tableChoiceQueries.get(tableChoice.getSelectionModel().getSelectedItem());
+        Object tableAlias = tableChoice.getSelectionModel().getSelectedItem();
+        String tableName = tableChoiceQueries.get(tableAlias);
         MySQLDriver driver = new MySQLDriver(mysql_url, mysql_user, mysql_pass, tableName);
         // Удаляем существующие данные в табл
         tvTest.getItems().clear();
@@ -330,14 +332,44 @@ public class MainController {
         saveAllButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                driver.executePreparedQueries();
+                if (driver.executePreparedQueries()) {
+                    Alert saveInfo = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK);
+                    saveInfo.setTitle("Сохранение таблицы");
+                    saveInfo.setHeaderText("Успешно сохранена таблица " + tableAlias.toString());
+                    saveInfo.setContentText("Нажмите ОК, чтобы продолжить");
+                    saveInfo.showAndWait();
+                }
             }
         });
+        closeButton.setOnAction(e-> {
+            if (driver.hasUnsavedChanges()) {
+                Alert saveInfo = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.YES, ButtonType.NO);
+                saveInfo.setTitle("Сохранение таблицы");
+                saveInfo.setHeaderText("Вы не сохранили изменения в таблице " + tableAlias);
+                saveInfo.setContentText("Сохранить изменения?");
+                Optional<ButtonType> result = saveInfo.showAndWait();
+                if (result.get() == ButtonType.YES) {
+                    driver.executePreparedQueries();
+                    tvTest.getItems().clear();
+                    tvTest.getColumns().clear();
+                }
+                if (result.get() == ButtonType.NO) {
+                    tvTest.getItems().clear();
+                    tvTest.getColumns().clear();
+                }
+            }
+            else {
+                tvTest.getItems().clear();
+                tvTest.getColumns().clear();
+            }
+        });
+
     }
 
     // Для вывода таблицы в новом окне
     public void onDisplayWindowedTableButtonPressed(ActionEvent event) {
-        String tableName = tableChoiceQueries.get(tableChoice.getSelectionModel().getSelectedItem());
+        Object tableAlias = tableChoice.getSelectionModel().getSelectedItem();
+        String tableName = tableChoiceQueries.get(tableAlias);
         MySQLDriver driver = new MySQLDriver(mysql_url, mysql_user, mysql_pass, tableName);
         // Подготовка окна
         VBox layout = new VBox();
@@ -438,6 +470,19 @@ public class MainController {
                 }
                 newRow.getChildren().add(ok);
                 inputStage.show();
+            }
+        });
+        // При закрытии таблицы
+        stage.setOnCloseRequest(e -> {
+            if (driver.hasUnsavedChanges()) {
+                Alert saveInfo = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.YES, ButtonType.NO);
+                saveInfo.setTitle("Сохранение таблицы");
+                saveInfo.setHeaderText("Вы не сохранили изменения в таблице " + tableAlias.toString());
+                saveInfo.setContentText("Сохранить изменения?");
+                Optional<ButtonType> result = saveInfo.showAndWait();
+                if (result.get() == ButtonType.YES) {
+                    driver.executePreparedQueries();
+                }
             }
         });
         // Добавление элементов

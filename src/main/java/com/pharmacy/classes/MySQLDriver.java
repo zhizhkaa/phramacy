@@ -100,8 +100,12 @@ public class MySQLDriver {
         return columns;
     }
 
+    public boolean hasUnsavedChanges() {
+        return !preparedQueries.isEmpty();
+    }
+
     // Для выполнения сохранённых/подготовленных запросов
-    public void executePreparedQueries() {
+    public boolean executePreparedQueries() {
         // Подтягиваем таблицу с MySQL
         final String selectQuery = "SELECT * FROM " + this.tableName;
         PreparedQuery nextQuery;
@@ -178,7 +182,9 @@ public class MySQLDriver {
                     "\nЧтобы сохранить остальные изменения снова нажмите Сохранить");
             executeError.setContentText(e.getMessage());
             executeError.showAndWait();
+            return false;
         }
+        return true;
     }
 
     // Для удаления строки
@@ -313,6 +319,11 @@ public class MySQLDriver {
             tv.setItems(data);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            Alert sqlError = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+            sqlError.setTitle("Ошибка при связи с MySQL");
+            sqlError.setHeaderText("Ошибка при заполнении таблицы");
+            sqlError.setContentText(e.getMessage());
+            sqlError.showAndWait();
         }
     }
 }
