@@ -458,17 +458,17 @@ public class MainController {
                             }
                         }
                         // Если хотя бы одно поле заполнено
-                        if (!inputs.isEmpty()) {
-                            ObservableList new_row = FXCollections.observableArrayList(); // новая строка для структуры данных
-                            Iterator<String> i_col = columns.iterator();
-                            for (Iterator<String> i_input = inputs.iterator(); i_input.hasNext() && i_col.hasNext();) {
-                                String colName = i_col.next();
-                                String e_text = i_input.next();
-                                if (!" ".equals(e_text)) {
-                                    values.put(colName, e_text);
-                                }
-                                new_row.add(e_text);
+                        ObservableList new_row = FXCollections.observableArrayList(); // новая строка для структуры данных
+                        Iterator<String> i_col = columns.iterator();
+                        for (Iterator<String> i_input = inputs.iterator(); i_input.hasNext() && i_col.hasNext();) {
+                            String colName = i_col.next();
+                            String e_text = i_input.next();
+                            if (!" ".equals(e_text)) {
+                                values.put(colName, e_text);
                             }
+                            new_row.add(e_text);
+                        }
+                        if (!values.isEmpty()) {
                             // Сохранение как запроса к бд
                             driver.inputRow(tv, values, new_row);
                             // Выход из формы заполнения вставки
