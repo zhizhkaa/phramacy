@@ -131,7 +131,7 @@
             <TextField fx:id="emailField" layoutX="40.0" layoutY="57.0" prefHeight="26.0" prefWidth="250.0" promptText="E-mail" stylesheets="@style.css" />
          </AnchorPane>
       </Pane>
-      <Pane fx:id="tables" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #e8f3ff;" stylesheets="@style.css">
+      <Pane fx:id="tables" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #e8f3ff;" stylesheets="@style.css" visible="false">
          <Label layoutX="36.0" layoutY="31.0" stylesheets="@style.css" text="Таблица: ">
             <font>
                <Font size="14.0" />

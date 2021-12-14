@@ -453,6 +453,9 @@ public class MainController {
                             if (!e_tf.getText().isEmpty()) {
                                 inputs.add(e_tf.getText());
                             }
+                            else {
+                                inputs.add(" ");
+                            }
                         }
                         // Если хотя бы одно поле заполнено
                         if (!inputs.isEmpty()) {
@@ -461,7 +464,9 @@ public class MainController {
                             for (Iterator<String> i_input = inputs.iterator(); i_input.hasNext() && i_col.hasNext();) {
                                 String colName = i_col.next();
                                 String e_text = i_input.next();
-                                values.put(colName, e_text);
+                                if (!" ".equals(e_text)) {
+                                    values.put(colName, e_text);
+                                }
                                 new_row.add(e_text);
                             }
                             // Сохранение как запроса к бд

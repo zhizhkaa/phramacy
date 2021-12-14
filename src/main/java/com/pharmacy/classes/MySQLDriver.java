@@ -282,7 +282,9 @@ public class MySQLDriver {
             for(int i=0 ; i<rs.getMetaData().getColumnCount(); i++){
                 //We are using non property style for making dynamic table
                 final int j = i;
-                TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i+1));
+                String col_name = rs.getMetaData().getColumnName(i+1);
+                columns.add(col_name);
+                TableColumn col = new TableColumn(getColumnAlias(col_name));
                 col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
                     public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
                         return new SimpleStringProperty(param.getValue().get(j).toString());
@@ -297,7 +299,7 @@ public class MySQLDriver {
                         int cell_col = cellEditEvent.getTablePosition().getColumn();
                         data.get(cell_row).set(cell_col, cellEditEvent.getNewValue());
                         // сохранение запроса
-                        preparedQueries.add(new PreparedQuery(cell_row+1, col.getText(), cellEditEvent.getNewValue()));
+                        preparedQueries.add(new PreparedQuery(cell_row+1, col_name, cellEditEvent.getNewValue()));
                     }
                 });
                 col.setCellFactory(TextFieldTableCell.forTableColumn());
