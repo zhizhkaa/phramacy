@@ -28,9 +28,12 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.security.CodeSource;
 import java.sql.*;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -860,9 +863,31 @@ public class MainController {
     // Кнопка перезагрузки
     public void onRebootButtonPressed(ActionEvent event) {
 
+        // TODO добавить чтобы при неправильном вводе логина при сбросе пароля выводилось "нет такого пользователя"
     }
     // Кнопка резервного копирования
-    public void onBackupButtonPressed(ActionEvent event) {
+    public void onBackupButtonPressed(ActionEvent event) throws URISyntaxException, IOException, InterruptedException {
+        System.out.println("Сохранение");
 
+        String dbName = "Pharmacy";
+        String dbUser = "root";
+        String dbPass = "password";
+
+        FileChooser chooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("SQL files (*.sql)", "*.sql");
+        chooser.getExtensionFilters().add(extFilter);
+        File file = chooser.showSaveDialog(reports.getScene().getWindow()); // Это куда сохранять
+
+        // todo надо сделать чтобы логин, пароль и директория до bin сама заполнялась
+        ProcessBuilder builder = new ProcessBuilder(
+                "cmd.exe", "/c",
+
+                "\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump\" " + // Эта директория до MySQL Server\bin, её мы получаем при старте программы
+                        "-uroot -ppassword Pharmacy");  // -u[логин] -p[пароль] [База данных] (СЛИТНО!)
+        builder.redirectOutput(file); // Сюда сохраняем
+        builder.redirectErrorStream(true);
+        Process p = builder.start();
+        p.waitFor();
+        System.out.print("DOne");
     }
 }
