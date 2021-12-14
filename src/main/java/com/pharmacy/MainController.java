@@ -840,8 +840,9 @@ public class MainController {
                 Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
                 alert1.setTitle("Удаление пользователя");
                 alert1.setHeaderText("Вы удалили пользователя: " + login);
-                alert.setContentText(null);
-                alert.show();
+                alert1.setContentText(null);
+                alert1.show();
+                updateChoiceBox(userLogins);
             }
         }
     }

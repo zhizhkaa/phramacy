@@ -160,7 +160,7 @@
          </Button>
          <TableView fx:id="tvTest" editable="true" layoutX="36.0" layoutY="210.0" prefHeight="300.0" prefWidth="514.0" style="-fx-background-color: #fefefe; -fx-border-color: #3e6cbd;" stylesheets="@style.css" tableMenuButtonVisible="true" />
       </Pane>
-      <Pane fx:id="reports" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #e8f3ff;" stylesheets="@style.css" visible="false">
+      <Pane fx:id="reports" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #e8f3ff;" stylesheets="@style.css">
          <Label layoutX="71.0" layoutY="36.0" stylesheets="@style.css" text="Форма:">
             <font>
                <Font size="14.0" />
