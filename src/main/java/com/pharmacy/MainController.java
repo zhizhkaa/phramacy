@@ -102,6 +102,7 @@ public class MainController {
     public void onChangePasswordPressed() throws JSONException {
         String oldPassword = "";
         String newPassword = "";
+        String newPasswordA = "";
 
         // Проверка на ввод
         if ((oldPasswordShown.getText().trim().isEmpty()) && (oldPasswordHide.getText().trim().isEmpty())) {
@@ -120,11 +121,28 @@ public class MainController {
             if (oldPasswordHide.isVisible()) { oldPassword = oldPasswordHide.getText().trim(); }
             else if (oldPasswordShown.isVisible()) { oldPassword = oldPasswordShown.getText().trim(); }
 
-            if (newPasswordHide.isVisible()) { newPassword = newPasswordHide.getText().trim(); }
+            if (newPasswordHide.isVisible()) { newPasswordA = newPasswordHideA.getText().trim(); }
+            else if (newPasswordShownA.isVisible()) { newPasswordA = newPasswordShownA.getText().trim(); }
+
+            if (newPasswordHideA.isVisible()) { newPassword = newPasswordHide.getText().trim(); }
             else if (newPasswordShown.isVisible()) { newPassword = newPasswordShown.getText().trim(); }
 
             //noinspection ConstantConditions
-            if (oldPassword.equals(newPassword) && (!(oldPassword.isEmpty()) || !(newPassword.isEmpty()))) { System.out.println("Старый и новый пароли совпадают"); }
+            if (!newPassword.equals(newPasswordA)) {
+                Alert info = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                info.setTitle("Ошибка при смене пароля");
+                info.setHeaderText(null);
+                info.setContentText("Неверно повторён новый пароль");
+                info.showAndWait();
+            }
+            else if (oldPassword.equals(newPassword) && (!(oldPassword.isEmpty()) || !(newPassword.isEmpty()))) {
+                System.out.println("onChangePasswordPressed(): Старый и новый пароли совпадают");
+                Alert info = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                info.setTitle("Ошибка при смене пароля");
+                info.setHeaderText(null);
+                info.setContentText("Старый и новый пароли совпадают");
+                info.showAndWait();
+            }
             else { // Если не работает добавь if (!(oldPassword.equals(newPassword) && (!(oldPassword.isEmpty()) || !(newPassword.isEmpty()))))
                 String passwordJSON = user.getPassword();
                 if (oldPassword.equals(passwordJSON)) {
@@ -265,6 +283,7 @@ public class MainController {
         @FXML private TableView<String> tvTest;
         @FXML private ChoiceBox tableChoice;
         @FXML private Button saveAllButton;
+        @FXML private Button closeButton;
 
     // Для связи с сервером БД
     // TODO Придумать для url, root, password ввод
@@ -324,7 +343,8 @@ public class MainController {
     public void onDisplayTableButtonPressed(ActionEvent event) {
         /* TODO Вывод окна с подтверждением на смену таблицы без сохранения
             ИЛИ (сложнее) сделать, чтобы появлялся новый элемент TableView */
-        String tableName = tableChoiceQueries.get(tableChoice.getSelectionModel().getSelectedItem());
+        Object tableAlias = tableChoice.getSelectionModel().getSelectedItem();
+        String tableName = tableChoiceQueries.get(tableAlias);
         MySQLDriver driver = new MySQLDriver(mysql_url, mysql_user, mysql_pass, tableName);
         // Удаляем существующие данные в табл
         tvTest.getItems().clear();
@@ -333,14 +353,44 @@ public class MainController {
         saveAllButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                driver.executePreparedQueries();
+                if (driver.executePreparedQueries()) {
+                    Alert saveInfo = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK);
+                    saveInfo.setTitle("Сохранение таблицы");
+                    saveInfo.setHeaderText("Успешно сохранена таблица " + tableAlias.toString());
+                    saveInfo.setContentText("Нажмите ОК, чтобы продолжить");
+                    saveInfo.showAndWait();
+                }
             }
         });
+        closeButton.setOnAction(e-> {
+            if (driver.hasUnsavedChanges()) {
+                Alert saveInfo = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.YES, ButtonType.NO);
+                saveInfo.setTitle("Сохранение таблицы");
+                saveInfo.setHeaderText("Вы не сохранили изменения в таблице " + tableAlias);
+                saveInfo.setContentText("Сохранить изменения?");
+                Optional<ButtonType> result = saveInfo.showAndWait();
+                if (result.get() == ButtonType.YES) {
+                    driver.executePreparedQueries();
+                    tvTest.getItems().clear();
+                    tvTest.getColumns().clear();
+                }
+                if (result.get() == ButtonType.NO) {
+                    tvTest.getItems().clear();
+                    tvTest.getColumns().clear();
+                }
+            }
+            else {
+                tvTest.getItems().clear();
+                tvTest.getColumns().clear();
+            }
+        });
+
     }
 
     // Для вывода таблицы в новом окне
     public void onDisplayWindowedTableButtonPressed(ActionEvent event) {
-        String tableName = tableChoiceQueries.get(tableChoice.getSelectionModel().getSelectedItem());
+        Object tableAlias = tableChoice.getSelectionModel().getSelectedItem();
+        String tableName = tableChoiceQueries.get(tableAlias);
         MySQLDriver driver = new MySQLDriver(mysql_url, mysql_user, mysql_pass, tableName);
         // Подготовка окна
         VBox layout = new VBox();
@@ -406,17 +456,22 @@ public class MainController {
                             if (!e_tf.getText().isEmpty()) {
                                 inputs.add(e_tf.getText());
                             }
+                            else {
+                                inputs.add(" ");
+                            }
                         }
                         // Если хотя бы одно поле заполнено
-                        if (!inputs.isEmpty()) {
-                            ObservableList new_row = FXCollections.observableArrayList(); // новая строка для структуры данных
-                            Iterator<String> i_col = columns.iterator();
-                            for (Iterator<String> i_input = inputs.iterator(); i_input.hasNext() && i_col.hasNext();) {
-                                String colName = i_col.next();
-                                String e_text = i_input.next();
+                        ObservableList new_row = FXCollections.observableArrayList(); // новая строка для структуры данных
+                        Iterator<String> i_col = columns.iterator();
+                        for (Iterator<String> i_input = inputs.iterator(); i_input.hasNext() && i_col.hasNext();) {
+                            String colName = i_col.next();
+                            String e_text = i_input.next();
+                            if (!" ".equals(e_text)) {
                                 values.put(colName, e_text);
-                                new_row.add(e_text);
                             }
+                            new_row.add(e_text);
+                        }
+                        if (!values.isEmpty()) {
                             // Сохранение как запроса к бд
                             driver.inputRow(tv, values, new_row);
                             // Выход из формы заполнения вставки
@@ -441,6 +496,19 @@ public class MainController {
                 }
                 newRow.getChildren().add(ok);
                 inputStage.show();
+            }
+        });
+        // При закрытии таблицы
+        stage.setOnCloseRequest(e -> {
+            if (driver.hasUnsavedChanges()) {
+                Alert saveInfo = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.YES, ButtonType.NO);
+                saveInfo.setTitle("Сохранение таблицы");
+                saveInfo.setHeaderText("Вы не сохранили изменения в таблице " + tableAlias.toString());
+                saveInfo.setContentText("Сохранить изменения?");
+                Optional<ButtonType> result = saveInfo.showAndWait();
+                if (result.get() == ButtonType.YES) {
+                    driver.executePreparedQueries();
+                }
             }
         });
         // Добавление элементов
