@@ -2,7 +2,6 @@ package com.pharmacy;
 
 import com.pharmacy.classes.MySQLDriver;
 import com.pharmacy.classes.User;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -18,22 +17,17 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.security.CodeSource;
 import java.sql.*;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -290,6 +284,7 @@ public class MainController {
     String mysql_url = "jdbc:mysql://localhost:3306/pharmacy";
     String mysql_user = "root"; // TODO можно запросить в начале программы и сохранить в Jsone пока что через настройки
     String mysql_pass = "password";
+    File mysql_bin;
 
     public void onMySQLAccessConfigButtonPressed(ActionEvent event) {
         VBox layout = new VBox();
@@ -298,13 +293,16 @@ public class MainController {
         stage.setTitle("Параметры входа MySQL");
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(tables.getScene().getWindow());
-        stage.setScene(scene);
+
         Label lb = new Label("Введите имя пользователя и пароль MySQL:");
         TextField tfUser = new TextField(mysql_user);
         TextField tfPass = new TextField();
         tfUser.setPromptText("Имя пользователя");
         tfPass.setPromptText("Пароль");
         Button save = new Button("Сохранить");
+        Label binLabel = new Label("Выберите путь до MySQL Server");
+        Button binButton = new Button("MySQL Server..");
+        stage.setScene(scene);
         save.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -332,10 +330,21 @@ public class MainController {
                 }
             }
         });
+        binButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                DirectoryChooser chooser = new DirectoryChooser();
+                mysql_bin = chooser.showDialog(stage);
+                System.out.println(mysql_bin);
+            }
+        });
         layout.getChildren().add(lb);
         layout.getChildren().add(tfUser);
         layout.getChildren().add(tfPass);
         layout.getChildren().add(save);
+        layout.getChildren().add(binLabel);
+        layout.getChildren().add(binButton);
+        stage.setResizable(false);
         stage.show();
     }
 
@@ -939,20 +948,13 @@ public class MainController {
         System.out.println("Сохранение");
 
         String dbName = "Pharmacy";
-        String dbUser = "root";
-        String dbPass = "password";
-
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("SQL files (*.sql)", "*.sql");
         chooser.getExtensionFilters().add(extFilter);
         File file = chooser.showSaveDialog(reports.getScene().getWindow()); // Это куда сохранять
 
-        // todo надо сделать чтобы логин, пароль и директория до bin сама заполнялась
-        ProcessBuilder builder = new ProcessBuilder(
-                "cmd.exe", "/c",
+        ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "\"" + mysql_bin + "\\bin\\mysqldump\" -u" + mysql_user + " -p" + mysql_pass + " " + dbName);
 
-                "\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump\" " + // Эта директория до MySQL Server\bin, её мы получаем при старте программы
-                        "-uroot -ppassword Pharmacy");  // -u[логин] -p[пароль] [База данных] (СЛИТНО!)
         builder.redirectOutput(file); // Сюда сохраняем
         builder.redirectErrorStream(true);
         Process p = builder.start();
