@@ -99,6 +99,7 @@ public class MainController {
     public void onChangePasswordPressed() throws JSONException {
         String oldPassword = "";
         String newPassword = "";
+        String newPasswordA = "";
 
         // Проверка на ввод
         if ((oldPasswordShown.getText().trim().isEmpty()) && (oldPasswordHide.getText().trim().isEmpty())) {
@@ -117,11 +118,21 @@ public class MainController {
             if (oldPasswordHide.isVisible()) { oldPassword = oldPasswordHide.getText().trim(); }
             else if (oldPasswordShown.isVisible()) { oldPassword = oldPasswordShown.getText().trim(); }
 
-            if (newPasswordHide.isVisible()) { newPassword = newPasswordHide.getText().trim(); }
+            if (newPasswordHide.isVisible()) { newPasswordA = newPasswordHideA.getText().trim(); }
+            else if (newPasswordShownA.isVisible()) { newPasswordA = newPasswordShownA.getText().trim(); }
+
+            if (newPasswordHideA.isVisible()) { newPassword = newPasswordHide.getText().trim(); }
             else if (newPasswordShown.isVisible()) { newPassword = newPasswordShown.getText().trim(); }
 
             //noinspection ConstantConditions
-            if (oldPassword.equals(newPassword) && (!(oldPassword.isEmpty()) || !(newPassword.isEmpty()))) {
+            if (!newPassword.equals(newPasswordA)) {
+                Alert info = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
+                info.setTitle("Ошибка при смене пароля");
+                info.setHeaderText(null);
+                info.setContentText("Неверно повторён новый пароль");
+                info.showAndWait();
+            }
+            else if (oldPassword.equals(newPassword) && (!(oldPassword.isEmpty()) || !(newPassword.isEmpty()))) {
                 System.out.println("onChangePasswordPressed(): Старый и новый пароли совпадают");
                 Alert info = new Alert(Alert.AlertType.ERROR, null, ButtonType.OK);
                 info.setTitle("Ошибка при смене пароля");
