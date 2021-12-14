@@ -172,11 +172,6 @@
                <Font size="14.0" />
             </font>
          </Label>
-         <Button layoutX="331.0" layoutY="542.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="86.0" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe;" stylesheets="@style.css" text="Печать">
-            <font>
-               <Font name="System Bold" size="14.0" />
-            </font>
-         </Button>
          <Button layoutX="433.0" layoutY="542.0" mnemonicParsing="false" onAction="#onSaveButtonPressed" style="-fx-background-color: #3e6cbd; -fx-text-fill: #fefefe;" stylesheets="@style.css" text="Сохранить как">
             <font>
                <Font name="System Bold" size="14.0" />
