@@ -210,24 +210,26 @@ public class MySQLDriver {
     // Для возврата синонима названия столбца
     public String getColumnAlias(String col_name) {
         // TODO Заполнить для всех таблиц
-        switch (tableName) {
-            case "employees":
-                switch (col_name) {
-                    case "employee_id": return "Код Сотрудника";
-                    case "surname": return "Фамилия";
-                    case "name": return "Имя";
-                    case "middle_name": return "Отчество";
-                    case "phone_number": return "Номер телефона";
-                    case "position_id": return "Код Должности";
-                }
-            case "medicine":
-                switch (col_name) {
-                    case "medicine_id": return "Код Препарата";
-                    case "trade_name": return "Торговое Название";
-                    case "international_name": return "Международное Название";
-                    case "chemical_name": return "Химическое Название";
-                    case "atc_code": return "Код АТХ";
-                }
+        if (tableName != null) {
+            switch (tableName) {
+                case "employees":
+                    switch (col_name) {
+                        case "employee_id": return "Код Сотрудника";
+                        case "surname": return "Фамилия";
+                        case "name": return "Имя";
+                        case "middle_name": return "Отчество";
+                        case "phone_number": return "Номер телефона";
+                        case "position_id": return "Код Должности";
+                    }
+                case "medicine":
+                    switch (col_name) {
+                        case "medicine_id": return "Код Препарата";
+                        case "trade_name": return "Торговое Название";
+                        case "international_name": return "Международное Название";
+                        case "chemical_name": return "Химическое Название";
+                        case "atc_code": return "Код АТХ";
+                    }
+            }
         }
         return col_name;
     }
